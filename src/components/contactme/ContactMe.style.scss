@@ -1,0 +1,147 @@
+@import '../../general.scss';
+
+.contact-me {
+    // position: absolute;
+    // bottom: 0;
+    // left: 0;
+    // width: 100%;
+    background-color: #343434;
+    color:  whitesmoke;
+    margin: 0px;
+    box-shadow: 0px -4px 8px 0px rgba($color: #000000, $alpha: 0.19);
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    
+    .contact-title {
+        font-size: 25px;
+        color: inherit;
+        // border: 1px solid red;
+    }
+
+    .contact-details {
+        padding: 15px 20px;
+        // border: 1px solid blue;
+    }
+
+    .details {
+        text-align: left;
+        padding-left: 10px;
+        // border: 1px solid green;
+    }
+    
+    .fa-icon {
+        font-size: 16px;
+        color: $colorAccent;
+        margin-right: 20px;
+        margin-bottom: 10px;
+    }
+
+    .fa-phone {
+        border: 1px solid $colorAccent;
+        border: 1px solid #ddd;
+        border-radius: 50%;
+        padding: 10px;
+    }
+
+    .fa-stack {
+        margin: 5px 0px;
+    }
+
+    .fa-envelope {
+        color: #D44638;
+        color: #B23121;
+        color: #C6C6C6;  // Silver Sand
+        // color: #EEEEEE;  // Bright Gray
+        // color: #E2E2E2;  // Platinum
+        color: #DADADA;  // Gainsboro
+    }
+
+    .envelope {
+        &:hover {
+            .fa-circle {
+                color: #B23121;
+                // background-color: #00acee;
+            }
+            .fa-envelope {
+                color: white;
+            }
+    
+        }
+    }
+
+    .fa-instagram {
+        color: #E1306C;
+        // color: #833AB4;
+    }
+
+    .instagram {
+        &:hover {
+            .fa-circle {
+                color: #E1306C;
+                // background-color: #00acee;
+            }
+            .fa-instagram {
+                color: white;
+            }
+    
+        }
+    }
+
+    .fa-twitter {
+        color: #00acee;
+    }
+
+    .twitter {
+        &:hover {
+            .fa-circle {
+                color: #00acee;
+                // background-color: #00acee;
+            }
+            .fa-twitter {
+                color: white;
+            }
+    
+        }
+    }
+
+
+    .fa-facebook-f {
+        color: #4267B2;
+    }
+
+    .facebook-f {
+        &:hover {
+            .fa-circle {
+                color: #4267B2;
+                // background-color: #00acee;
+            }
+            .fa-facebook-f {
+                color: white;
+            }
+    
+        }
+    }
+
+    .contact-text {
+        color: inherit;
+        color: white;
+    }
+
+    .social-acct {
+        text-align: left;
+        margin-top: 20px;
+        // border: 1px solid white;
+    }
+}
+
+@media only screen and (max-width: 420px) {
+    .contact-me {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+}

@@ -1,0 +1,46 @@
+.update-text {
+  position: absolute;
+  text-align: center;
+  font-size: 30px;
+  line-height: 50px;
+  width: 100%;
+  margin: auto;
+
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100vh; /* means view height: 90vh = 90% of the viewport height.*/
+}
+
+.loader {
+  height: 70px;
+  width: 70px;
+  border-color: transparent transparent transparent transparent;
+  border-width: 4px;
+  border-style: solid;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.spinner {
+  font-size: 50px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .display-development .loader {
+    animation: loader-spin infinite 4s linear;
+  }
+}
+
+@keyframes loader-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

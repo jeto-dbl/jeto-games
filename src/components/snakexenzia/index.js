@@ -1,0 +1,1 @@
+export { SnakeXenzia as default } from './SnakeXenzia'
