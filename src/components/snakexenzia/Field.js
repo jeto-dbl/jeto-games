@@ -309,6 +309,7 @@ export class Field extends React.Component {
         this.setState({ speed: GAME_START_SPEED });
         this.setState({ food: generateFoodCoordinate(this.state.snake) });
         this.setState({ snakeColor: getSnakeColor() });
+        this.setState({ highScore: this.getCookie("JetOHighScore", false) || 0 });
         this.setCookie("JetOstate", this.state);
     }
 
@@ -343,13 +344,18 @@ export class Field extends React.Component {
     }
 
     setNewHighScore() {
-        if(this.state.score > this.getCookie("JetOHighScore")) {
+        if(this.state.score > this.state.highScore) {
             this.setState({ highScore: this.state.score });
             this.setCookie('JetOHighScore', this.state.score)
         }
     }
 
+    vibratePad() {
+        window.navigator.vibrate(100);
+    }
+
     onPadDirChange(newDirection) {
+        this.vibratePad();
         const prevDirection = this.state.direction;
         switch (newDirection) {
             case directions.RIGHT: // Go RIGHT

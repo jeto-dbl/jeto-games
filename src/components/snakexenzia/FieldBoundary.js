@@ -89,7 +89,7 @@ export default function FieldBoundary(props) {
 
     const WINDOW_WIDTH = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     const WINDOW_HEIGHT = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    const FIELD_WIDTH = Math.min(WINDOW_WIDTH, WINDOW_HEIGHT) - 20;
+    const FIELD_WIDTH = Math.min(WINDOW_WIDTH, WINDOW_HEIGHT) - 10;
     const style = {width: `${FIELD_WIDTH}px`, height: `${FIELD_WIDTH}px`};
     return(
         <div className={`field-boundary ${vibrateClass}`} style={style}>
