@@ -36,7 +36,11 @@ const GameOverBoard = (props) => {
                         Level {props.level}
                     </div>
                     <div className="game-over-title">GAME OVER</div>
-                    <button onClick={props.resetGame} className="replay-btn">
+                    <button 
+                        onClick={props.resetGame} 
+                        className="replay-btn"
+                        style={{cursor: "pointer"}}
+                        >
                         Replay
                     </button>
                 </div>

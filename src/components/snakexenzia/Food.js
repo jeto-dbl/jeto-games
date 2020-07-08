@@ -14,7 +14,7 @@ export default function Food(props) {
         <div 
             className={props.isBonus ? "snake-food-bonus" : "snake-food"}
             style={style}>
-            {props.numFoodEaten}
+            {/* {props.numFoodEaten} */}
         </div>
     )
 }

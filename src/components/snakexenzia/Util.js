@@ -6,10 +6,16 @@ const directions = {
     // down-arrow	 40
     // enter         13
     // space-bar     32
-    UP: 'UP',
-    RIGHT: 'RIGHT',
-    DOWN: 'DOWN',
-    LEFT: 'LEFT',
+    UP: 38,
+    RIGHT: 39,
+    DOWN: 40,
+    LEFT: 37,
+    REPLAY: 13,
+}
+
+const COOKIEKEYS = {
+    highscore: "JetOHighScore",
+    state: "JetOstate",
 }
 
 const screenMode = {
@@ -137,6 +143,7 @@ export {
     MAX_SPEED,
     LEVEL_RATIO,
     SPEED_RATIO,
+    COOKIEKEYS,
     directions,
     isMobile,
     screenMode,

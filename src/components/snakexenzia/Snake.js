@@ -37,7 +37,7 @@ const DisplaySnake = (props) => {
             {/* if this box represent head, attach a dot at its center */}
             {
                 idx === array.length - 1 ? 
-                    <span className="snake-head-dot"></span> : ""
+                    <span className="snake-head-dot"></span> : null
             }
             {/* if this box represent tail, attach a dot at its center */}
             {
@@ -45,7 +45,7 @@ const DisplaySnake = (props) => {
                     <span 
                         className="snake-head-dot"
                         style={{width: '20%', height: '20%'}}></span> 
-                    : ""
+                    : null
             }
         </div>
         )

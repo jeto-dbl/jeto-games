@@ -25,6 +25,7 @@ import {
     SPEED_RATIO,
     MAX_SPEED,
     UNIT_SPEED,
+    COOKIEKEYS,
     isMobile,
     screenMode,
     time,
@@ -179,7 +180,7 @@ export class Field extends React.Component {
             hasBonus: false,
             speed: GAME_START_SPEED,
             score: 0,
-            highScore: this.getCookie("JetOHighScore", false) || 0,
+            highScore: this.getCookie(COOKIEKEYS.highscore, false) || 0,
             numOfFoodEaten: 0,
             gameOver: false,
             vibrate: false,
@@ -215,7 +216,7 @@ export class Field extends React.Component {
         
 
         // if state exist, use it or use the starting state.
-        this.state = JSON.parse(this.getCookie("JetOstate", true) || "null") || this.startingState;
+        this.state = JSON.parse(this.getCookie(COOKIEKEYS.state, true) || "null") || this.startingState;
         
         // Store the state to be used for resetting game later
         // Also make sure you add all the needed states before this line of code.
@@ -225,6 +226,7 @@ export class Field extends React.Component {
         this.startGame = this.startGame.bind(this);
         this.updateMoveDirection = this.updateMoveDirection.bind(this);
         this.onPadDirChange = this.onPadDirChange.bind(this);
+        this.setDirection = this.setDirection.bind(this);
         this.moveSnake = this.moveSnake.bind(this);
         this.increaseScoreBy = this.increaseScoreBy.bind(this);
         this.setNewHighScore = this.setNewHighScore.bind(this);
@@ -309,8 +311,8 @@ export class Field extends React.Component {
         this.setState({ speed: GAME_START_SPEED });
         this.setState({ food: generateFoodCoordinate(this.state.snake) });
         this.setState({ snakeColor: getSnakeColor() });
-        this.setState({ highScore: this.getCookie("JetOHighScore", false) || 0 });
-        this.setCookie("JetOstate", this.state);
+        this.setState({ highScore: this.getCookie(COOKIEKEYS.highscore, false) || 0 });
+        this.setCookie(COOKIEKEYS.state, this.state);
     }
 
     vibrateSnake() {
@@ -354,59 +356,27 @@ export class Field extends React.Component {
         window.navigator.vibrate(100);
     }
 
-    onPadDirChange(newDirection) {
-        this.vibratePad();
-        const prevDirection = this.state.direction;
-        switch (newDirection) {
-            case directions.RIGHT: // Go RIGHT
-                // Make sure the direction makes sense
-                if (prevDirection !== directions.LEFT) {
-                    this.setState({ direction: newDirection });
-                }
-                break;
-            case directions.DOWN: // Go DOWN
-                if (prevDirection !== directions.UP) {
-                    this.setState({ direction: newDirection });
-                }
-                break;
-            case directions.LEFT: // Go LEFT
-                if (prevDirection !== directions.RIGHT) {
-                    this.setState({ direction: newDirection });
-                }
-                break;
-            case directions.UP: // Go UP
-                if (prevDirection !== directions.DOWN) {
-                    this.setState({ direction: newDirection });
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    updateMoveDirection(e) {
-        e.preventDefault();
-        e = e || window.event;
+    setDirection(direction) {
         const prevDirection = this.state.direction;
         let newDirection = this.state.direction;
-        switch (e.keyCode) {
-            case 39: // Go RIGHT
+        switch (direction) {
+            case directions.RIGHT: // Go RIGHT
                 // Make sure direction to go makes sense
                 if (prevDirection !== directions.LEFT) {
                     newDirection = directions.RIGHT;
                 }
                 break;
-            case 40: // Go DOWN
+            case directions.DOWN: // Go DOWN
                 if (prevDirection !== directions.UP) {
                     newDirection = directions.DOWN;
                 }
                 break;
-            case 37: // Go LEFT
+            case directions.LEFT: // Go LEFT
                 if (prevDirection !== directions.RIGHT) {
                     newDirection = directions.LEFT;
                 }
                 break;
-            case 38: // Go UP
+            case directions.UP: // Go UP
                 if (prevDirection !== directions.DOWN) {
                     newDirection = directions.UP;
                 }
@@ -414,15 +384,28 @@ export class Field extends React.Component {
             default:
                 break;
         }
-
         // If the Enter key is pressed, replay the game 
         // if and only if the game is over (gameOver is true)
         // Note that Space-Bar should be used for Play and Pause
-        if(e.keyCode === 13 && this.state.gameOver) {
+        if (direction === directions.REPLAY && this.state.gameOver) {
             this.resetGame();
         }
 
-        this.setState({ direction: newDirection });
+        // Also, only update direction if game begins
+        if(this.state.countdown <= 0){
+            this.setState({ direction: newDirection });
+        }
+    }
+
+    onPadDirChange(direction) {
+        this.setDirection(direction);
+        this.vibratePad();
+    }
+
+    updateMoveDirection(e) {
+        e.preventDefault();
+        e = e || window.event;
+        this.setDirection(e.keyCode);
     }
 
     moveToNewLevel() {
@@ -510,7 +493,7 @@ export class Field extends React.Component {
             
             // console.log(`${this.state.foodForSpeed} speed food remaining!!!`);
         }
-        this.setCookie('JetOstate', JSON.stringify(this.state));
+        this.setCookie(COOKIEKEYS.state, JSON.stringify(this.state));
         return isDead;
     }
 
@@ -658,7 +641,7 @@ export class Field extends React.Component {
     preparePlayer() {
         SOUND.playAdvanceToLevel();
         // Only change snake color if user don't have a previous game
-        if(!this.getCookie("JetOstate", false)){
+        if(!this.getCookie(COOKIEKEYS.state, false)){
             this.setState({ snakeColor: getSnakeColor() });
         }
         const countDown = setInterval(() => {
@@ -702,7 +685,8 @@ export class Field extends React.Component {
                     <button className="fullscreen-toggle">
                         <i
                             className={"fa fa-" + this.state.fullscreenMode}
-                            onClick={() => this.toogleFullScreen(this.state.fullscreenMode)}></i>
+                            onClick={() => this.toogleFullScreen(this.state.fullscreenMode)}
+                            ></i>
                     </button>
                 </div>
 
@@ -728,14 +712,14 @@ export class Field extends React.Component {
                        border-bottom and border-top for pad-up and pad-down color
                 */}
                 {
-                    !isMobile? "":
+                    !isMobile? null:
                         <Pad 
                             onPadDirChange={this.onPadDirChange}
                             color={this.state.padColor}
                         />
                 }
                 {
-                    !isMobile? "":
+                    !isMobile? null:
                         <ChangePadColor
                             padColor={this.state.padColor}
                             nextPadColor={this.state.nextPadColor}

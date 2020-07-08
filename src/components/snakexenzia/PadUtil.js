@@ -15,6 +15,7 @@ const ChangePadColor = (props) => {
             <div
                 className="pad-up"
                 onClick={() => changePadColor(next)}
+                style={{ cursor: "pointer" }}
                 >
                 <i
                     className="fa fa-caret-up"
@@ -23,6 +24,7 @@ const ChangePadColor = (props) => {
             <div
                 className="pad-down"
                 onClick={() => changePadColor(current)}
+                style={{ cursor: "pointer" }}
                 >
                 <i
                     className="fa fa-caret-down"
@@ -33,7 +35,10 @@ const ChangePadColor = (props) => {
 }
 
 const Pad = (props) => {
-    const colorStyle = { background: `radial-gradient(#f1f1f1, ${props.color}, ${props.color})` }
+    const colorStyle = {
+        background: `radial-gradient(#f1f1f1, ${props.color}, ${props.color})`,
+        cursor: "pointer",
+    }
     return (
         <div className="pad-boundary">
             <div className="pad" style={{ boxShadow: `0px 0px 4px 2px ${props.color}` }}>
@@ -42,17 +47,13 @@ const Pad = (props) => {
                         id="left-arrow"
                         className="arrow"
                         style={colorStyle}
-                        onClick={() => {
-                            props.onPadDirChange(directions.LEFT)
-                        }}
+                        onClick={() => props.onPadDirChange(directions.LEFT)}
                     ><span className="small-arrow-left"></span></button>
                     <button
                         id="right-arrow"
                         className="arrow"
                         style={colorStyle}
-                        onClick={() => {
-                            props.onPadDirChange(directions.RIGHT)
-                        }}
+                        onClick={() => props.onPadDirChange(directions.RIGHT)}
                     ><span className="small-arrow-right"></span></button>
                 </div>
                 <div className="vertical-dir">
@@ -60,17 +61,13 @@ const Pad = (props) => {
                         id="up-arrow"
                         className="arrow"
                         style={colorStyle}
-                        onClick={() => {
-                            props.onPadDirChange(directions.UP)
-                        }}
+                        onClick={() => props.onPadDirChange(directions.UP)}
                     ><span className="small-arrow-up"></span></button>
                     <button
                         id="down-arrow"
                         className="arrow"
                         style={colorStyle}
-                        onClick={() => {
-                            props.onPadDirChange(directions.DOWN)
-                        }}
+                        onClick={() => props.onPadDirChange(directions.DOWN)}
                     ><span className="small-arrow-down"></span></button>
                 </div>
             </div>

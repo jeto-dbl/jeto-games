@@ -34,6 +34,7 @@ $bloodColor: #8A0303;
     height: 550px;
     border-radius: 5px;
     box-shadow: 0px 0px 8px 4px rgba(0, 0, 0, .5);
+    -webkit-box-shadow: 0px 0px 8px 4px rgba(0, 0, 0, .5);
     margin: 0px auto;
 }
 
@@ -52,6 +53,7 @@ $bloodColor: #8A0303;
     border: none;
     opacity: 0;
     animation: showField .5s linear 1;
+    -webkit-animation: showField .5s linear 1;
 
 }
 
@@ -94,20 +96,54 @@ $bloodColor: #8A0303;
   This is the same as the VIBRATE_MILLISECONDS in the Util.js file
   */
   animation: shake 0.5s 1;
+  -webkit-animation: shake 0.5s 1;
 }
 
 @keyframes shake {
-  0% { transform: translate(1px, 1px) rotate(0deg); }
-  10% { transform: translate(-1px, -2px) rotate(-1deg); }
-  20% { transform: translate(-3px, 0px) rotate(1deg); }
-  30% { transform: translate(3px, 2px) rotate(0deg); }
-  40% { transform: translate(1px, -1px) rotate(1deg); }
-  50% { transform: translate(-1px, 2px) rotate(-1deg); }
-  60% { transform: translate(-3px, 1px) rotate(0deg); }
-  70% { transform: translate(3px, 1px) rotate(-1deg); }
-  80% { transform: translate(-1px, -1px) rotate(1deg); }
-  90% { transform: translate(1px, 2px) rotate(0deg); }
-  100% { transform: translate(1px, -2px) rotate(-1deg); }
+    0% { 
+        transform: translate(1px, 1px) rotate(0deg); 
+        -webkit-transform: translate(1px, 1px) rotate(0deg); 
+    }
+    10% { 
+        transform: translate(-1px, -2px) rotate(-1deg); 
+        -webkit-transform: translate(-1px, -2px) rotate(-1deg); 
+    }
+    20% { 
+        transform: translate(-3px, 0px) rotate(1deg); 
+        -webkit-transform: translate(-3px, 0px) rotate(1deg); 
+    }
+    30% { 
+        transform: translate(3px, 2px) rotate(0deg); 
+        -webkit-transform: translate(3px, 2px) rotate(0deg); 
+    }
+    40% { 
+        transform: translate(1px, -1px) rotate(1deg); 
+        -webkit-transform: translate(1px, -1px) rotate(1deg); 
+    }
+    50% { 
+        transform: translate(-1px, 2px) rotate(-1deg); 
+        -webkit-transform: translate(-1px, 2px) rotate(-1deg); 
+    }
+    60% { 
+        transform: translate(-3px, 1px) rotate(0deg); 
+        -webkit-transform: translate(-3px, 1px) rotate(0deg); 
+    }
+    70% { 
+        transform: translate(3px, 1px) rotate(-1deg); 
+        -webkit-transform: translate(3px, 1px) rotate(-1deg); 
+    }
+    80% { 
+        transform: translate(-1px, -1px) rotate(1deg); 
+        -webkit-transform: translate(-1px, -1px) rotate(1deg); 
+    }
+    90% { 
+        transform: translate(1px, 2px) rotate(0deg); 
+        -webkit-transform: translate(1px, 2px) rotate(0deg); 
+    }
+    100% { 
+        transform: translate(1px, -2px) rotate(-1deg); 
+        -webkit-transform: translate(1px, -2px) rotate(-1deg); 
+    }
 }
 
 .snake-head-dot {
@@ -116,11 +152,13 @@ $bloodColor: #8A0303;
     background-color: $bloodColor;
     border-radius: 50%;
     box-shadow: inset 0px 0px 4px 2px rgba(0, 0, 0, .19);
+    -webkit-box-shadow: inset 0px 0px 4px 2px rgba(0, 0, 0, .19);
 }
 
 .eat-animate {
     border: 4px dotted #8A0303;
     animation: eatAnimation .05s linear infinite;
+    -webkit-animation: eatAnimation .05s linear infinite;
 }
 
 @keyframes eatAnimation {
@@ -146,6 +184,7 @@ $bloodColor: #8A0303;
     background-color: yellow;
     border-radius: 50%;
     box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+    -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
     z-index: 2;
     color: green;
     font-size: 8px;
@@ -153,24 +192,28 @@ $bloodColor: #8A0303;
     font-weight: 600;
     pointer-events: none;
     animation: blinkBonusFood .4s infinite;
+    -webkit-animation: blinkBonusFood .4s infinite;
     
 }
 
 @keyframes blinkBonusFood {
     0% {
         box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+        -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
         width: $BOX_SIZE;
         height: $BOX_SIZE; 
     }
 
     50% {
         box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .7);
+        -webkit-box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .7);
         width: $BOX_SIZE_INC;
         height: $BOX_SIZE_INC;
     }
 
     100% {
         box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+        -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
         width: $BOX_SIZE;
         height: $BOX_SIZE; 
     }
@@ -182,32 +225,36 @@ $bloodColor: #8A0303;
     height: $BOX_SIZE;
     background-color: yellow;
     border-radius: 50%;
-    box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
     z-index: 2;
     color: green;
     font-size: 8px;
     text-align: center;
     font-weight: 600;
     box-shadow: 0px 0px 8px 4px rgba($color: #000000, $alpha: .5);
+    -webkit-box-shadow: 0px 0px 8px 4px rgba($color: #000000, $alpha: .5);
     animation: blinkFood 1.3s infinite;
+    -webkit-animation: blinkFood 1.3s infinite;
     pointer-events: none;
 }
 
 @keyframes blinkFood {
     0% {
         box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
+        -webkit-box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
         width: $BOX_SIZE;
         height: $BOX_SIZE; 
     }
 
     50% {
         box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .5);
+        -webkit-box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .5);
         width: $BOX_SIZE_INC;
         height: $BOX_SIZE_INC;
     }
 
     100% {
         box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
+        -webkit-box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
         width: $BOX_SIZE;
         height: $BOX_SIZE; 
     }
@@ -229,8 +276,8 @@ $bloodColor: #8A0303;
     width: 104px;
     height: 104px;
     border-radius: 50%;
-    box-shadow: 0px 0px 8px 4px rgba(8, 107, 107, .3);
     box-shadow: 0px 0px 4px 2px rgba(0, 255, 255, .3);
+    -webkit-box-shadow: 0px 0px 4px 2px rgba(0, 255, 255, .3);
 }
 
 .pad-color-change {
@@ -241,6 +288,7 @@ $bloodColor: #8A0303;
     height: 72px;
     border-radius: 5px;
     box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, .19);
+    -webkit-box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, .19);
     background-color: rgba(8, 107, 107, .3);
     display: flex;
     flex-direction: column;
@@ -259,6 +307,7 @@ $bloodColor: #8A0303;
 
     &:active {
         transform: scale(0.8, 0.8);
+        -webkit-transform: scale(0.8, 0.8);
     }
 }
 
@@ -306,6 +355,7 @@ button {
 
 button:active {
     transform: scale(0.9, 0.9);
+    -webkit-transform: scale(0.9, 0.9);
 }
 
 .arrow {
@@ -314,6 +364,7 @@ button:active {
     background-color: rgb(0, 255, 255);
     background-color: rgb(0,206,209);
     box-shadow: inset 0px 0px 2px 1px;
+    -webkit-box-shadow: inset 0px 0px 2px 1px;
     margin: 4px;
     background: radial-gradient( rgb(0,206,209), rgb(0, 255, 255), rgb(224, 255, 255));
 }
@@ -406,6 +457,7 @@ button:active {
     right: 5px;
     border-radius: 5px;
     box-shadow: -6px 6px 8px 2px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: -6px 6px 8px 2px rgba(0, 0, 0, 0.5);
     background-color: #000;
     background-color: rgb(128,128,128);
     background-color: rgb(105,105,105);
@@ -481,6 +533,7 @@ button:active {
 
 .level {
     animation: showLevel 4s linear 1;
+    -webkit-animation: showLevel 4s linear 1;
     opacity: 0;
     font-size: 40px;
 }
@@ -523,6 +576,7 @@ button:active {
 
 .countdown {
     animation: showCountDown 3s linear 1;
+    -webkit-animation: showCountDown 3s linear 1;
     opacity: 1;
 }
 
@@ -577,6 +631,7 @@ button:active {
     color: rgba(255, 0, 0, 1);
     margin-top: 0px;
     animation: fromTop 3s linear 1;
+    -webkit-animation: fromTop 3s linear 1;
     pointer-events: none;
 }
 
@@ -616,21 +671,27 @@ button:active {
     color: rgb(163, 10, 10);
     border: 6px solid rgb(163, 10, 10);
     box-shadow: inset 0px 0px 4px 2px rgba(0, 0, 0, .2);
+    -webkit-box-shadow: inset 0px 0px 4px 2px rgba(0, 0, 0, .2);
     animation: pulse 2s linear 3.5s infinite;
+    -webkit-animation: pulse 2s linear 3.5s infinite;
     transform: scale(.9);
+    -webkit-transform: scale(.9);
 }
 
 @keyframes pulse {
     0% {
         transform: scale(1);
+        -webkit-transform: scale(1);
     }
 
     50% {
         transform: scale(.9);
+        -webkit-transform: scale(.9);
     }
     
     100% {
         transform: scale(1);
+        -webkit-transform: scale(1);
     }
 }
 
