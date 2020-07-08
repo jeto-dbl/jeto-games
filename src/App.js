@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { 
-  BrowserRouter as Router,
+  HashRouter,
   Route,
   Switch,
 } from "react-router-dom";
@@ -19,13 +19,12 @@ import PageNotFound from "./components/pagenotfound"
 function App() {
   const [isLoading, setLoading] = useState(true)
   useEffect(() => setLoading(false), []);
-
   // Display loading page till the App component is mounted
   if (isLoading) return (<DisplayDevelopment isLogo={true} />)
   else
     return (
       
-        <Router>
+        <HashRouter basename="/">
             <div className="App">
               <Switch>
                 {/* <RouteList /> */}
@@ -33,6 +32,9 @@ function App() {
                   <Home pageTitle="Welcome to the Game Village | JetO" />
                 </Route>
                 <Route exact path="/home">
+                  <Home pageTitle="Welcome to the Game Village | JetO" />
+                </Route>
+                <Route exact path="/JetO-Games">
                   <Home pageTitle="Welcome to the Game Village | JetO" />
                 </Route>
                 <Route exact path="/snake-xenzia">
@@ -43,7 +45,7 @@ function App() {
                 </Route>
               </Switch>
             </div>
-        </Router>
+        </HashRouter>
     );
 }
 

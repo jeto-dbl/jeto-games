@@ -58,19 +58,19 @@ $transition: .4s;
     }
 
     div {
+        position: relative;
         padding: 0;
         width: 250px;
         height: 100%;
-        position: relative;
+        transition: $transition;
         // margin: 10px;
         // border: 1px solid black;
-        transition: $transition;
     }
 
     img {
         width: 100%;
         height: 100%;
-        margin: 0;
+        display: block; // To remove extra white space (around 3px) at the bottom of image.
         // border: 1px solid red;
     }
 
@@ -80,9 +80,9 @@ $transition: .4s;
         width: 100%;
         height: 100%;
         color: white;
-        background-color: rgba(0, 0, 0, 0.55);
+        background-color: rgba(0, 0, 0, 0.7);
         transition: $transition;
-        border: 1px solid blue;
+        // border: 1px solid blue;
 
         span {
             color: white;

@@ -74,7 +74,12 @@ export function ContactMe(params) {
                     <ListSocialHandle />
                 </p>
                 <h1 className="contact-title">
+                    <a
+                        href="https://www.linkedin.com/in/john-oyegbite-67bb9913a/"
+                        target="_blank"
+                        rel="noopener noreferrer">
                     John Oyegbite
+                    </a>
                 </h1>
             </div>
         </section>
