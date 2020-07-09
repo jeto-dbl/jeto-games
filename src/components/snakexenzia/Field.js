@@ -660,8 +660,9 @@ export class Field extends React.Component {
         const countDown = setInterval(() => {
             if(this.state.countdown <= 0) {
                 clearInterval(countDown);
+            } else {
+                this.setState({ countdown: this.state.countdown - 1 });
             }
-            this.setState({ countdown: this.state.countdown - 1 });
         }, time.ONE_SECOND);
     }
 
