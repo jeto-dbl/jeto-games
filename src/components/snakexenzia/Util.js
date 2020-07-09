@@ -15,7 +15,7 @@ const directions = {
 }
 
 const COOKIEKEYS = {
-    highscore: "JetOHighScore",
+    highscore: "JetOhighscore",
     state: "JetOstate",
 }
 

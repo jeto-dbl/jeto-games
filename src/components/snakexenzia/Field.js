@@ -180,7 +180,7 @@ export class Field extends React.Component {
             hasBonus: false,
             speed: GAME_START_SPEED,
             score: 0,
-            highScore: this.getCookie(COOKIEKEYS.highscore, false) || 0,
+            highscore: this.getCookie(COOKIEKEYS.highscore, false) || 0,
             numOfFoodEaten: 0,
             gameOver: false,
             paused: false,
@@ -230,7 +230,7 @@ export class Field extends React.Component {
         this.setDirection = this.setDirection.bind(this);
         this.moveSnake = this.moveSnake.bind(this);
         this.increaseScoreBy = this.increaseScoreBy.bind(this);
-        this.setNewHighScore = this.setNewHighScore.bind(this);
+        this.setNewHighscore = this.setNewHighscore.bind(this);
         this.increaseSnakeSpeedBy = this.increaseSnakeSpeedBy.bind(this);
         this.showFood = this.showFood.bind(this);
         this.checkForBonus = this.checkForBonus.bind(this);
@@ -315,7 +315,7 @@ export class Field extends React.Component {
         this.setState({ speed: GAME_START_SPEED });
         this.setState({ food: generateFoodCoordinate(this.state.snake) });
         this.setState({ snakeColor: getSnakeColor() });
-        this.setState({ highScore: this.getCookie(COOKIEKEYS.highscore, false) || 0 });
+        this.setState({ highscore: this.getCookie(COOKIEKEYS.highscore, false) || 0 });
         this.setCookie(COOKIEKEYS.state, this.state);
     }
 
@@ -336,7 +336,7 @@ export class Field extends React.Component {
     increaseScoreBy(digit) {
         const scoreInc = this.state.score + Math.ceil(digit * this.getRealLevel());
         this.setState({ score: scoreInc });
-        this.setNewHighScore();
+        this.setNewHighscore();
     }
 
     setCookie(key, value){
@@ -349,10 +349,10 @@ export class Field extends React.Component {
         return cookies.get(key, { doNotParse: doNotParse });
     }
 
-    setNewHighScore() {
-        if(this.state.score > this.state.highScore) {
-            this.setState({ highScore: this.state.score });
-            this.setCookie('JetOHighScore', this.state.score)
+    setNewHighscore() {
+        if(this.state.score > this.state.highscore) {
+            this.setState({ highscore: this.state.score });
+            this.setCookie(COOKIEKEYS.highscore, this.state.score)
         }
     }
 
@@ -678,7 +678,6 @@ export class Field extends React.Component {
     }
 
     togglePlayPause() {
-        console.log(this.state.paused);
         if(this.state.paused) {
             this.resumeGame();
         } else {
@@ -703,13 +702,13 @@ export class Field extends React.Component {
         window.removeEventListener("pagehide", this.pauseGame);
     }
 
-    highScoreBoard() {
+    highscoreBoard() {
         const opacity = this.state.gameOver || this.state.paused ? "1" : ".4";
         return (
             <div className="highscore-board" style={{ opacity: opacity }}>
                 <div className="score-label">H-Score: </div>
                 <div className="score">
-                    {this.state.highScore}
+                    {this.state.highscore}
                 </div>
             </div>
         )
@@ -722,7 +721,7 @@ export class Field extends React.Component {
             <div id="game-boundary">
 
                 <div className="fullscreen-highscore">
-                    {this.highScoreBoard()}
+                    {this.highscoreBoard()}
                     <button className="fullscreen-toggle">
                         <i
                             className={"fa fa-" + this.state.fullscreenMode}
