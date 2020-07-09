@@ -11,6 +11,7 @@ const directions = {
     DOWN: 40,
     LEFT: 37,
     REPLAY: 13,
+    PLAY_PAUSE: 32,
 }
 
 const COOKIEKEYS = {

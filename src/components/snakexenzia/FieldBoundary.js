@@ -7,7 +7,7 @@ import Food from './Food';
 
 const CountdownBoard = (props) => {
     return(
-        props.countdown <= 0 ? "" :
+        props.countdown <= 0 ? null :
             <div className="game-over-board">
                 <div className="game-over">
                     <div className="advise">
@@ -29,7 +29,7 @@ const CountdownBoard = (props) => {
 
 const GameOverBoard = (props) => {
     return(
-        !props.gameOver ? "" :
+        !props.gameOver ? null :
             <div className="game-over-board">
                 <div className="game-over">
                     <div className="level" style={{ opacity: '1' }}>
@@ -42,6 +42,27 @@ const GameOverBoard = (props) => {
                         style={{cursor: "pointer"}}
                         >
                         Replay
+                    </button>
+                </div>
+            </div>
+    )
+}
+
+const ResumeGameBoard = (props) => {
+    const style = {
+        cursor: 'pointer',
+        color: '#1C86EE',
+        border: '5px solid #00FFFF',
+    }
+    return (
+        !props.paused ? null :
+            <div className="game-over-board">
+                <div className="game-over">
+                    <button
+                        onClick={props.resumeGame}
+                        className="replay-btn"
+                        style={style}>
+                        RESUME
                     </button>
                 </div>
             </div>
@@ -86,6 +107,9 @@ export default function FieldBoundary(props) {
     const hasBonus = props.hasBonus;
     const bonusLife = props.bonusLife;
     const gameOver = props.gameOver;
+    const paused = props.paused;
+    const resumeGame = props.resumeGame;
+    const togglePlayPause = props.togglePlayPause;
     const resetGame = props.resetGame;
     const vibrate = props.vibrate;
     const score = props.score;
@@ -107,6 +131,7 @@ export default function FieldBoundary(props) {
                     return (<div
                                 key={idx}
                                 className={`field  ${vibrateClass}`}
+                                onDoubleClick={togglePlayPause}
                                 style={{
                                     backgroundImage: `url(${fieldImage})`,
                                     zIndex: arr.length - idx,
@@ -131,6 +156,11 @@ export default function FieldBoundary(props) {
                                     gameOver={gameOver}
                                     level={level}
                                     resetGame={resetGame}
+                                />
+
+                                <ResumeGameBoard 
+                                    paused={paused}
+                                    resumeGame={resumeGame}
                                 />
 
                                 <Snake

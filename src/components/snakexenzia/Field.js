@@ -183,6 +183,7 @@ export class Field extends React.Component {
             highScore: this.getCookie(COOKIEKEYS.highscore, false) || 0,
             numOfFoodEaten: 0,
             gameOver: false,
+            paused: false,
             vibrate: false,
             padColorPos: 0,
             fullscreenMode: screenMode.EXPAND,
@@ -236,6 +237,9 @@ export class Field extends React.Component {
         this.vibrateSnake = this.vibrateSnake.bind(this);
         this.resetState = this.resetState.bind(this);
         this.resetGame =this.resetGame.bind(this);
+        this.pauseGame = this.pauseGame.bind(this);
+        this.resumeGame = this.resumeGame.bind(this);
+        this.togglePlayPause = this.togglePlayPause.bind(this);
         this.changePadColor = this.changePadColor.bind(this);
         this.toogleFullScreen = this.toogleFullScreen.bind(this);
         this.moveToNewLevel = this.moveToNewLevel.bind(this);
@@ -385,10 +389,15 @@ export class Field extends React.Component {
                 break;
         }
         // If the Enter key is pressed, replay the game 
-        // if and only if the game is over (gameOver is true)
-        // Note that Space-Bar should be used for Play and Pause
+        // if and only if the game is over (gameOver is true).
+        // Note that Space-Bar should be used for Play and Pause.
         if (direction === directions.REPLAY && this.state.gameOver) {
             this.resetGame();
+        }
+
+        // You can also pause or play the game using the space-bar key.
+        if(direction === directions.PLAY_PAUSE) {
+            this.togglePlayPause();
         }
 
         // Also, only update direction if game begins
@@ -607,7 +616,11 @@ export class Field extends React.Component {
         // console.log(`Level ${this.getComputerLevel()} with ${this.foodLevelToEat()} foods`);
         // console.log(`${this.state.foodForSpeed} foods per speed`);
         const currInterval = setInterval(() => {
-            if (this.state.countdown <= 0) {
+            if (this.state.paused) {
+                clearInterval(currInterval);
+            }
+            // Only move snake when the game begins and the game is not paused.
+            if (this.state.countdown <= 0 && !this.state.paused) {
                 // When you move a snake, it's either the snake hits a boundary,
                 // collides with itself for the game to be over.
                 const gameOver = this.moveSnake();
@@ -652,14 +665,46 @@ export class Field extends React.Component {
         }, time.ONE_SECOND);
     }
 
+    pauseGame() {
+        SOUND.pauseSnakeHiss();
+        this.setState({ paused: true });
+        this.setCookie(COOKIEKEYS.state, this.state);
+    }
+
+    resumeGame() {
+        this.setState({ paused: false });
+        this.startGame();
+    }
+
+    togglePlayPause() {
+        console.log(this.state.paused);
+        if(this.state.paused) {
+            this.resumeGame();
+        } else {
+            this.pauseGame();
+        }
+    }
+
     componentDidMount() {
         window.addEventListener('keydown', this.updateMoveDirection);
         this.preparePlayer();
         this.startGame();
+
+        // If the user leaves the window tab, Add a fucntion to pause the game
+        window.addEventListener("blur", this.pauseGame);
+        window.addEventListener("pagehide", this.pauseGame);
+    
+        // Add a function to play or resume the game
+        // window.addEventListener("focus", this.resumeGame);
+        // window.addEventListener("pageshow", this.resumeGame);
     }
     
     componentWillUnmount() {
         window.removeEventListener('keydown', this.updateMoveDirection);
+        window.removeEventListener("blur", this.pauseGame);
+        window.removeEventListener("pagehide", this.pauseGame);
+        // window.removeEventListener("focus", this.resumeGame);
+        // window.removeEventListener("pageshow", this.resumeGame);
     }
 
     highScoreBoard() {
@@ -701,6 +746,9 @@ export class Field extends React.Component {
                     hasBonus={this.state.hasBonus}
                     bonusLife={this.state.bonusLife}
                     gameOver={this.state.gameOver}
+                    paused={this.state.paused}
+                    resumeGame={this.resumeGame}
+                    togglePlayPause={this.togglePlayPause}
                     vibrate={this.state.vibrate}
                     resetGame={this.resetGame}
                     score={this.state.score}
