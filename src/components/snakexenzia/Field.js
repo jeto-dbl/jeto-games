@@ -703,7 +703,7 @@ export class Field extends React.Component {
     }
 
     highScoreBoard() {
-        const opacity = this.state.gameOver ? "1" : ".4";
+        const opacity = this.state.gameOver || this.state.paused ? "1" : ".4";
         return (
             <div className="highscore-board" style={{ opacity: opacity }}>
                 <div className="score-label">H-Score: </div>
