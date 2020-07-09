@@ -694,17 +694,12 @@ export class Field extends React.Component {
         window.addEventListener("blur", this.pauseGame);
         window.addEventListener("pagehide", this.pauseGame);
     
-        // Add a function to play or resume the game
-        // window.addEventListener("focus", this.resumeGame);
-        // window.addEventListener("pageshow", this.resumeGame);
     }
     
     componentWillUnmount() {
         window.removeEventListener('keydown', this.updateMoveDirection);
         window.removeEventListener("blur", this.pauseGame);
         window.removeEventListener("pagehide", this.pauseGame);
-        // window.removeEventListener("focus", this.resumeGame);
-        // window.removeEventListener("pageshow", this.resumeGame);
     }
 
     highScoreBoard() {
