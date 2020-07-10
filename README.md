@@ -6,7 +6,7 @@
 
 
 <img 
-    src="https://github.com/Oyelson/JetO-Games/tree/master/src/assets/static/media/snake-xenzia/screenshots/game-on-play.png?raw=true" 
+    src="https://raw.githubusercontent.com/Oyelson/JetO-Games/master/src/assets/static/media/snake-xenzia/screenshots/game-on-play.png" 
     alt="Snake moving" 
     width="623" 
     height="350">
