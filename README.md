@@ -30,5 +30,4 @@
     width="623" 
     height="350">
 
-
 [link-to-game]: https://oyelson.github.io/JetO-Games/
