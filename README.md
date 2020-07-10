@@ -15,7 +15,7 @@
 
 
 <img 
-    src="https://github.com/Oyelson/JetO-Games/tree/master/src/assets/static/media/snake-xenzia/screenshots/pause-game-snake.png?raw=true" 
+    src="https://raw.githubusercontent.com/Oyelson/JetO-Games/master/src/assets/static/media/snake-xenzia/screenshots/pause-game-snake.png" 
     alt="Snake game paused" 
     width="623" 
     height="350">
@@ -24,7 +24,7 @@
 
 
 <img 
-    src="https://github.com/Oyelson/JetO-Games/tree/master/src/assets/static/media/snake-xenzia/screenshots/game-over-snake.png?raw=true" 
+    src="https://raw.githubusercontent.com/Oyelson/JetO-Games/master/src/assets/static/media/snake-xenzia/screenshots/game-over-snake.png" 
     alt="Snake game over" 
     width="623" 
     height="350">
@@ -33,7 +33,7 @@
 
 
 <img 
-    src="https://github.com/Oyelson/JetO-Games/tree/master/src/assets/static/media/snake-xenzia/screenshots/new-level-snake.png?raw=true" 
+    src="https://raw.githubusercontent.com/Oyelson/JetO-Games/master/src/assets/static/media/snake-xenzia/screenshots/new-level-snake.png" 
     alt="Snake new level" 
     width="623" 
     height="350">
