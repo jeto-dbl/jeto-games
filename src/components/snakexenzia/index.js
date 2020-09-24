@@ -1,1 +1,1 @@
-export { SnakeXenzia as default } from './SnakeXenzia'
+export { SnakeXenzia as default } from './SnakeXenzia';

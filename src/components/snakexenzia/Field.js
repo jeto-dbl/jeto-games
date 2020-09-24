@@ -11,7 +11,7 @@ import {
 } from './PadUtil';
 import { 
     BOX_SIZE, 
-    directions, 
+    KEYBOARD_KEYS, 
     SNAKE_COLORS,
     PAD_COLORS,
     VIBRATE_MILLISECONDS,
@@ -25,16 +25,28 @@ import {
     SPEED_RATIO,
     MAX_SPEED,
     UNIT_SPEED,
-    COOKIEKEYS,
+    PAD_PORTION,
+    COOKIES_KEYS,
+    openFullscreen,
+    closeFullscreen,
+    setCookie,
+    getCookie,
+    browserLength,
+    browserBreadth,
     isMobile,
     screenMode,
     time,
-} from './Util'
+    Queue,
+} from './Util';
+import { NAME } from '../VALUES/strings';
 
-let START_DIRECTION = directions.RIGHT;
+let START_DIRECTION = KEYBOARD_KEYS.RIGHT;
 const SOUND = new Sound();
+// eslint-disable-next-line
+const DIRECTIONS_QUEUE = new Queue();
 
-const generateRandomFood = () => {
+
+const generateRandomCoord = () => {
     const minCoord = 1;
     // We have to substract the BOX_SIZE to cater
     // for the space that would contain the box size
@@ -88,19 +100,19 @@ const isSnakeDead = (snakeHead, snake) => {
 
 const getNewSnakeHead = (direction, snakeHead) => {
     switch (direction) {
-        case directions.RIGHT:
+        case KEYBOARD_KEYS.RIGHT:
             // Increase X; Y remains constant.
             snakeHead = [snakeHead[0] + BOX_SIZE, snakeHead[1]];
             break;
-        case directions.DOWN:
+        case KEYBOARD_KEYS.DOWN:
             // X remains constant; Increse Y.
             snakeHead = [snakeHead[0], snakeHead[1] + BOX_SIZE];
             break;
-        case directions.LEFT:
+        case KEYBOARD_KEYS.LEFT:
             // Reduce X; Y remains constant.
             snakeHead = [snakeHead[0] - BOX_SIZE, snakeHead[1]];
             break;
-        case directions.UP:
+        case KEYBOARD_KEYS.UP:
             // X remains constant; Reduce Y.
             snakeHead = [snakeHead[0], snakeHead[1] - BOX_SIZE];
             break;
@@ -114,21 +126,21 @@ const generateRandomSnakePos = () => {
     /* Generate the starting three (3) snake boxes at random on the field */
     const snake = [];
     // First generate the tail
-    snake.push(generateRandomFood());
+    snake.push(generateRandomCoord());
 
     // Now generate the other two (2) boxes relative to the tail.
     let snakeHead = snake[snake.length-1];
 
-    // Assign all possible directions to choose from
+    // Assign all possible KEYBOARD_KEYS to choose from
     const possibleDir = [
-        directions.UP, directions.RIGHT, 
-        directions.DOWN, directions.LEFT
+        KEYBOARD_KEYS.UP, KEYBOARD_KEYS.RIGHT, 
+        KEYBOARD_KEYS.DOWN, KEYBOARD_KEYS.LEFT,
     ]
 
     // Now I have to add one more box to modify the direction in which the 
     // other boxes would move towards to. 
     // Hence SNAKE_LEN is 4 (instead of 3)
-    let direction = directions.RIGHT; // To instantiate default direction
+    let direction = KEYBOARD_KEYS.RIGHT; // To instantiate default direction
     const SNAKE_LEN = 4;
     while(snake.length < SNAKE_LEN) {
         direction = possibleDir[Math.floor(Math.random() * possibleDir.length)];
@@ -148,10 +160,10 @@ const generateRandomSnakePos = () => {
 }
 
 const generateFoodCoordinate = (snake) => {
-    let newFood = generateRandomFood();
+    let newFood = generateRandomCoord();
     let foodAndSnakeBodyIntersect = isPartOfSnake(newFood, snake);
     while (foodAndSnakeBodyIntersect) {
-        newFood = generateRandomFood();
+        newFood = generateRandomCoord();
         foodAndSnakeBodyIntersect = isPartOfSnake(newFood, snake);
     }
     return newFood;
@@ -160,7 +172,6 @@ const generateFoodCoordinate = (snake) => {
 const getSnakeColor = () => {
     return SNAKE_COLORS[Math.floor(Math.random() * SNAKE_COLORS.length)]
 }
-
 
 
 export class Field extends React.Component {
@@ -180,13 +191,37 @@ export class Field extends React.Component {
             hasBonus: false,
             speed: GAME_START_SPEED,
             score: 0,
-            highscore: this.getCookie(COOKIEKEYS.highscore, false) || 0,
             numOfFoodEaten: 0,
             gameOver: false,
             paused: false,
             vibrate: false,
             padColorPos: 0,
             fullscreenMode: screenMode.EXPAND,
+            draggable: false,
+            turnedThisFrame: true,
+            padDimen: this.getPadDim(),
+            // Highscore default is 0
+            highscore: getCookie({
+                cookies: this.props.cookies, 
+                gameType: NAME.snakeXenzia, 
+                gameKey: COOKIES_KEYS.highscore,
+                doNotParse: false
+            }) || 0,
+            // Rotate screen by a default of 25 degrees when you have included the PlayerGuide 
+            // For now, use a default rotation of 0deg
+            rotateX: getCookie({
+                cookies: this.props.cookies, 
+                gameType: NAME.snakeXenzia, 
+                gameKey: COOKIES_KEYS.rotateX,
+                doNotParse: false
+            }) || 0,
+            isGuideCancelled: false,
+            isGuideDeleted: getCookie({
+                cookies: this.props.cookies, 
+                gameType: NAME.snakeXenzia, 
+                gameKey: COOKIES_KEYS.isGuideDeleted,
+                doNotParse: false
+            }) || false,
         }
         
         // Add food to state
@@ -214,10 +249,15 @@ export class Field extends React.Component {
 
         this.startingState.bonusLife = 100; // Unit in Percentage
 
-        
-
         // if state exist, use it or use the starting state.
-        this.state = JSON.parse(this.getCookie(COOKIEKEYS.state, true) || "null") || this.startingState;
+        this.state = JSON.parse(
+            getCookie({
+                cookies: this.props.cookies, 
+                gameType: NAME.snakeXenzia, 
+                gameKey: COOKIES_KEYS.state,
+                doNotParse: true
+            }) || "null"
+        ) || this.startingState;
         
         // Store the state to be used for resetting game later
         // Also make sure you add all the needed states before this line of code.
@@ -225,9 +265,10 @@ export class Field extends React.Component {
 
         this.preparePlayer = this.preparePlayer.bind(this);
         this.startGame = this.startGame.bind(this);
+        this.beginGame = this.beginGame.bind(this);
         this.updateMoveDirection = this.updateMoveDirection.bind(this);
         this.onPadDirChange = this.onPadDirChange.bind(this);
-        this.setDirection = this.setDirection.bind(this);
+        this.updateDirection = this.updateDirection.bind(this);
         this.moveSnake = this.moveSnake.bind(this);
         this.increaseScoreBy = this.increaseScoreBy.bind(this);
         this.setNewHighscore = this.setNewHighscore.bind(this);
@@ -243,47 +284,61 @@ export class Field extends React.Component {
         this.changePadColor = this.changePadColor.bind(this);
         this.toogleFullScreen = this.toogleFullScreen.bind(this);
         this.moveToNewLevel = this.moveToNewLevel.bind(this);
+        this.setDraggableFalse = this.setDraggableFalse.bind(this);
+        this.setDraggableTrue = this.setDraggableTrue.bind(this);
+        this.dragField = this.dragField.bind(this);
+        this.updatePadDimension = this.updatePadDimension.bind(this);
+        this.cancelPlayerGuide = this.cancelPlayerGuide.bind(this);
+        this.deletePlayerGuide = this.deletePlayerGuide.bind(this);
+    }
+
+    cancelPlayerGuide(cancel) {
+        // console.log(`Cancel Player Guide... Cancel:${cancel}`)
+        this.setState({ isGuideCancelled: cancel });
+        setCookie({
+            cookies: this.props.cookies,
+            gameType: NAME.snakeXenzia,
+            gameKey: COOKIES_KEYS.state,
+            gameValue: this.state,
+        });
+        // console.log(`from cancelPlayerGuide: isGuideCancelled(${this.state.isGuideCancelled})`)
+        this.beginGame();
+    }
+
+    deletePlayerGuide(del) {
+        // console.log("Delete Player Guide...")
+        this.setState({ isGuideDeleted: del });
+
+        setCookie({
+            cookies: this.props.cookies,
+            gameType: NAME.snakeXenzia,
+            gameKey: COOKIES_KEYS.isGuideDeleted,
+            gameValue: del,
+        });
+        
+        setCookie({
+            cookies: this.props.cookies,
+            gameType: NAME.snakeXenzia,
+            gameKey: COOKIES_KEYS.state,
+            gameValue: this.state,
+        });
+
+        this.beginGame();
     }
 
     toogleFullScreen(fullScreenMode) {
         if(fullScreenMode === screenMode.EXPAND) {
             // 1. View in fullscreen
-            this.openFullscreen();
+            openFullscreen();
             // 2. Change the fullscreenMode to compress
             // (this would in turn change the icon automatically)
             this.setState({ fullscreenMode: screenMode.COMPRESS});
-
         } else { // Screen mode is compress
             // 1. Exit fullscreen
-            this.closeFullscreen();
+            closeFullscreen();
             // 2. Change the fullscreenMode to expand
             // (this would in turn change the icon automatically)
             this.setState({ fullscreenMode: screenMode.EXPAND });
-        }
-    }
-
-    openFullscreen() {
-        const gameScreen = document.documentElement;
-        if (gameScreen.requestFullscreen) {
-            gameScreen.requestFullscreen();
-        } else if (gameScreen.mozRequestFullScreen) { /* Firefox */
-            gameScreen.mozRequestFullScreen();
-        } else if (gameScreen.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-            gameScreen.webkitRequestFullscreen();
-        } else if (gameScreen.msRequestFullscreen) { /* IE/Edge */
-            gameScreen.msRequestFullscreen();
-        }
-    }
-
-    closeFullscreen() {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.mozCancelFullScreen) { /* Firefox */
-            document.mozCancelFullScreen();
-        } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
-            document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { /* IE/Edge */
-            document.msExitFullscreen();
         }
     }
 
@@ -315,8 +370,27 @@ export class Field extends React.Component {
         this.setState({ speed: GAME_START_SPEED });
         this.setState({ food: generateFoodCoordinate(this.state.snake) });
         this.setState({ snakeColor: getSnakeColor() });
-        this.setState({ highscore: this.getCookie(COOKIEKEYS.highscore, false) || 0 });
-        this.setCookie(COOKIEKEYS.state, this.state);
+        
+        this.setState({ highscore: getCookie({
+            cookies: this.props.cookies, 
+            gameType: NAME.snakeXenzia, 
+            gameKey: COOKIES_KEYS.highscore,
+            doNotParse: false
+        }) || 0 });
+
+        this.setState({ rotateX: getCookie({
+            cookies: this.props.cookies, 
+            gameType: NAME.snakeXenzia, 
+            gameKey: COOKIES_KEYS.rotateX,
+            doNotParse: false
+        }) || 0 });
+
+        setCookie({
+            cookies: this.props.cookies,
+            gameType: NAME.snakeXenzia,
+            gameKey: COOKIES_KEYS.state,
+            gameValue: this.state,
+        });
     }
 
     vibrateSnake() {
@@ -339,50 +413,48 @@ export class Field extends React.Component {
         this.setNewHighscore();
     }
 
-    setCookie(key, value){
-        const { cookies } = this.props;
-        cookies.set(key, value, { path: '/' });
-    }
-
-    getCookie(key, doNotParse) {
-        const { cookies } = this.props;
-        return cookies.get(key, { doNotParse: doNotParse });
-    }
-
     setNewHighscore() {
         if(this.state.score > this.state.highscore) {
             this.setState({ highscore: this.state.score });
-            this.setCookie(COOKIEKEYS.highscore, this.state.score)
+            setCookie({
+                cookies: this.props.cookies,
+                gameType: NAME.snakeXenzia,
+                gameKey: COOKIES_KEYS.highscore,
+                gameValue: this.state.score,
+            });
         }
     }
 
     vibratePad() {
-        window.navigator.vibrate(100);
+        // Only vibrate pad if the game is on
+        if(!this.state.paused && !this.state.gameOver && this.state.countdown <= 0){
+            window.navigator.vibrate(100);
+        }
     }
 
-    setDirection(direction) {
+    updateDirection(direction) {
         const prevDirection = this.state.direction;
         let newDirection = this.state.direction;
         switch (direction) {
-            case directions.RIGHT: // Go RIGHT
-                // Make sure direction to go makes sense
-                if (prevDirection !== directions.LEFT) {
-                    newDirection = directions.RIGHT;
+            case KEYBOARD_KEYS.RIGHT: // Go RIGHT
+                // Make sure direction cannot go opposite ways
+                if (prevDirection !== KEYBOARD_KEYS.LEFT) {
+                    newDirection = KEYBOARD_KEYS.RIGHT;
                 }
                 break;
-            case directions.DOWN: // Go DOWN
-                if (prevDirection !== directions.UP) {
-                    newDirection = directions.DOWN;
+            case KEYBOARD_KEYS.DOWN: // Go DOWN
+                if (prevDirection !== KEYBOARD_KEYS.UP) {
+                    newDirection = KEYBOARD_KEYS.DOWN;
                 }
                 break;
-            case directions.LEFT: // Go LEFT
-                if (prevDirection !== directions.RIGHT) {
-                    newDirection = directions.LEFT;
+            case KEYBOARD_KEYS.LEFT: // Go LEFT
+                if (prevDirection !== KEYBOARD_KEYS.RIGHT) {
+                    newDirection = KEYBOARD_KEYS.LEFT;
                 }
                 break;
-            case directions.UP: // Go UP
-                if (prevDirection !== directions.DOWN) {
-                    newDirection = directions.UP;
+            case KEYBOARD_KEYS.UP: // Go UP
+                if (prevDirection !== KEYBOARD_KEYS.DOWN) {
+                    newDirection = KEYBOARD_KEYS.UP;
                 }
                 break;
             default:
@@ -391,30 +463,32 @@ export class Field extends React.Component {
         // If the Enter key is pressed, replay the game 
         // if and only if the game is over (gameOver is true).
         // Note that Space-Bar should be used for Play and Pause.
-        if (direction === directions.REPLAY && this.state.gameOver) {
+        if (direction === KEYBOARD_KEYS.REPLAY && this.state.gameOver) {
             this.resetGame();
         }
 
         // You can also pause or play the game using the space-bar key.
-        if(direction === directions.PLAY_PAUSE) {
+        if(direction === KEYBOARD_KEYS.PLAY_PAUSE) {
             this.togglePlayPause();
         }
 
-        // Also, only update direction if game begins
-        if(this.state.countdown <= 0){
+        // Also, only update direction if game begins,
+        // and we still have a pending direction that we haven't turned
+        if(this.state.countdown <= 0 && !this.state.turnedThisFrame){
             this.setState({ direction: newDirection });
+            this.setState({ turnedThisFrame: true });
         }
     }
 
     onPadDirChange(direction) {
-        this.setDirection(direction);
+        this.updateDirection(direction);
         this.vibratePad();
     }
 
     updateMoveDirection(e) {
         e.preventDefault();
         e = e || window.event;
-        this.setDirection(e.keyCode);
+        this.updateDirection(e.keyCode);
     }
 
     moveToNewLevel() {
@@ -437,8 +511,7 @@ export class Field extends React.Component {
         // reset countdown
         this.setState({ countdown: DEFAULT_COUNTDOWN });
 
-        this.preparePlayer();
-        this.startGame(); // Equivalent to continue game
+        this.beginGame();
     }
 
     setEat(shouldEat) {
@@ -502,7 +575,12 @@ export class Field extends React.Component {
             
             // console.log(`${this.state.foodForSpeed} speed food remaining!!!`);
         }
-        this.setCookie(COOKIEKEYS.state, JSON.stringify(this.state));
+        setCookie({
+            cookies: this.props.cookies,
+            gameType: NAME.snakeXenzia,
+            gameKey: COOKIES_KEYS.state,
+            gameValue: this.state,
+        });
         return isDead;
     }
 
@@ -511,6 +589,7 @@ export class Field extends React.Component {
     }
 
     speedMustIncrease() {
+        // check if the food associated with the current speed is finished
         return this.state.foodForSpeed <= 0;
     }
 
@@ -520,6 +599,7 @@ export class Field extends React.Component {
         this.increaseSnakeSpeedBy(UNIT_SPEED);
         this.resetFoodForSpeed();
         // console.log("New Speed: " + this.state.speed);
+        // continue the game after increasing the speed
         this.startGame();
     }
 
@@ -558,10 +638,10 @@ export class Field extends React.Component {
 
         // if food is BONUS then we have to set a countdown for the
         // BONUS food to disappear if snake hasn't eaten it within a
-        // specified period of time and show NORMAL food.
+        // specified period of time then we show NORMAL food.
         if(foodIsBonus) {
             this.setState({ food: generateFoodCoordinate(this.state.snake) });
-            const milliSecsChecked = time.MILLI_500;
+            const milliSecsInterval = time.MILLI_500;
             /*
                 // Default is 7 seconds for a speed of 200 (minimum)
                 // and 2 seconds for a speed of 0 (maximum)
@@ -571,51 +651,123 @@ export class Field extends React.Component {
                 |--- x     s  ---|
                 |--- 2     0  ---|
                 
-                => x = (s/200)*5 + 2
+                => x = (s/200) * 5 + 2
                 where 1. x is the bonusLife
                       2. s is this.state.speed
             */
-            let totalBonusLife = Math.round((this.state.speed*5) / 200) + 2 || 6;
-            totalBonusLife = Math.floor((1000 / milliSecsChecked)) * totalBonusLife;
-            let currBonusLife = totalBonusLife;
+            let totalBonusLife = Math.round((this.state.speed * 5) / 200) + 2 || 6;
+            // convert totalBonusLife from seconds to millseconds, 
+            // and divide by milliSecsInterval to get the total number of times that
+            // the setInterval would run for a given interval of milliSecsInterval.
+            totalBonusLife = Math.floor((1000 * totalBonusLife)) /  milliSecsInterval;
 
+            let currBonusLife = totalBonusLife;
             const prevFoodLevel = this.foodLevelToEat();
+
             const bonus = setInterval(() => {
-                // console.log("Bonus Life: " + currBonusLife);
-                // console.log(
-                //     `PrevFood: ${prevFoodLevel}; CurrFood: ${this.foodLevelToEat()}`
-                // );
-                if (prevFoodLevel - this.foodLevelToEat() > 1) {
-                    currBonusLife = 0;
+                const snakeHasEatenBonusFood = prevFoodLevel - this.foodLevelToEat() > 1;
+                if (snakeHasEatenBonusFood) {
                     SOUND.playEatFoodBonus();
-                    // console.log(`curr bonus life: ${currBonusLife}`);
-                    // console.log(`total bonus life: ${totalBonusLife}`);
-                    this.increaseScoreBy((totalBonusLife / totalBonusLife) * BONUS_FOOD_POINT);
+                    // increase score by the ratio of the bonus food point remaining
+                    const remainingBonusFoodPoint = (currBonusLife / totalBonusLife) * BONUS_FOOD_POINT;
+                    this.increaseScoreBy(remainingBonusFoodPoint);
+                    currBonusLife = 0;
                 }
-                // if BONUS food life is exhausted before eaten the food,
-                // remove the BONUS food and generate another food.
+                // if bonus food LIFE is exhausted before eaten the bonus food,
+                // remove the BONUS food
                 if (currBonusLife === 0) {
                     this.setState({ hasBonus: false });
                     clearInterval(bonus);
                 }
+                // update the bonusLife so it would show in the progress bar
                 this.setState({ bonusLife: (currBonusLife / totalBonusLife) * 100 });
                 currBonusLife -= 1;
-            }, milliSecsChecked);
+            }, milliSecsInterval);
+
+            if(currBonusLife <= 0) {
+                return;
+            }
         } else {
             SOUND.playEatFood();
         }
     }
 
-    resetGame() {
-        this.resetState();
-        this.preparePlayer();
-        this.startGame();
+    setDraggableFalse(event) {
+        this.setState({draggable: false});
+    }
+
+    setDraggableTrue(event) {
+        // startY was defined here so as to be used immediately in 
+        // dragField()
+        this.startY = event.clientY;
+        this.setState({draggable: true});
+    }
+
+    dragField(event) {
+        if(this.state.draggable) {
+            // We want our field to rotate between 0 degree and 60 degrees
+            const ROTATEX_MIN = 0;  // 0deg rotateX
+            const ROTATEX_MAX = 60; // 60deg rotateX
+            const endY = event.clientY;
+            let deltaY = endY - this.startY;
+
+            // 1. if deltaY is -ve, that means you are rotating up
+            //    else you are rotating down 
+            //    (because if the mouse is going up, y-coordinate would reduce)
+            // 2. rotate the field by 1 unit when the change in y-coordinate is 4
+            //    (this would make the field not rotate so fast that it would now skip)
+            // 3. make sure the rotateX is between 0 and 360 inclusive (i.e, rotateX % 360)
+            if(deltaY % 4 === 0) {
+                deltaY = deltaY < 0 ? 1 : -1; 
+                const rotateX = this.state.rotateX + deltaY;
+    
+                // console.log("--------------------");
+                // console.log({stateRotateX: this.state.rotateX});
+                // console.log({y: event.clientY, deltaY: deltaY, rotateX: rotateX});
+    
+                if(rotateX < ROTATEX_MIN) {
+                    this.setState({rotateX: ROTATEX_MIN % 360});
+                } else if(rotateX > ROTATEX_MAX) {
+                    this.setState({rotateX: ROTATEX_MAX % 360});
+                } else {
+                    this.setState({rotateX: rotateX % 360});
+                }
+                setCookie({
+                    cookies: this.props.cookies,
+                    gameType: NAME.snakeXenzia,
+                    gameKey: COOKIES_KEYS.state,
+                    gameValue: this.state,
+                });
+                setCookie({
+                    cookies: this.props.cookies,
+                    gameType: NAME.snakeXenzia,
+                    gameKey: COOKIES_KEYS.rotateX,
+                    gameValue: this.state.rotateX,
+                });
+            }
+        }
+    }
+
+    getPadDim() {
+        return Math.floor(
+            Math.min(
+                Math.abs(browserLength() - browserBreadth()) - 60, 
+                PAD_PORTION * browserLength()
+            )
+        );
+    }
+
+    updatePadDimension() {
+        this.setState({ padDimen: this.getPadDim() });
     }
 
     startGame() {
+        // console.log("Start Game...")
+
         // console.log(`Level ${this.getComputerLevel()} with ${this.foodLevelToEat()} foods`);
         // console.log(`${this.state.foodForSpeed} foods per speed`);
         const currInterval = setInterval(() => {
+            // if game is paused, simulate it by clearInterval
             if (this.state.paused) {
                 clearInterval(currInterval);
             }
@@ -624,6 +776,8 @@ export class Field extends React.Component {
                 // When you move a snake, it's either the snake hits a boundary,
                 // collides with itself for the game to be over.
                 const gameOver = this.moveSnake();
+                // set an update that we haven't turned in a direction
+                this.setState({ turnedThisFrame: false });
                 if(gameOver){
                     SOUND.pauseSnakeHiss();
                     SOUND.playGameOver();
@@ -633,9 +787,8 @@ export class Field extends React.Component {
                     return false;
                 }
 
-                // Move to new level if current food for this level is
-                // finished and,
-                //  there is still an image to represent new level
+                // Move to a new level if current food for this level is
+                // finished and there is still an image to represent new level
                 if(this.foodLevelToEat() <= 0
                     && this.getComputerLevel() < FIELD_IMAGES.length - 1 ){
                         clearInterval(currInterval);
@@ -652,11 +805,20 @@ export class Field extends React.Component {
     }
 
     preparePlayer() {
+        // console.log("Player preparing...")
+        
         SOUND.playAdvanceToLevel();
+
         // Only change snake color if user don't have a previous game
-        if(!this.getCookie(COOKIEKEYS.state, false)){
+        if(!getCookie({
+            cookies: this.props.cookies, 
+            gameType: NAME.snakeXenzia, 
+            gameKey: COOKIES_KEYS.state,
+            doNotParse: false
+        })) {
             this.setState({ snakeColor: getSnakeColor() });
         }
+
         const countDown = setInterval(() => {
             if(this.state.countdown <= 0) {
                 clearInterval(countDown);
@@ -666,10 +828,29 @@ export class Field extends React.Component {
         }, time.ONE_SECOND);
     }
 
+    togglePlayPause() {
+        // Only play or pause if the game is not over
+        if(!this.state.gameOver) {
+            if(this.state.paused) {
+                this.resumeGame();
+            } else {
+                this.pauseGame();
+            }
+        }
+    }
+
     pauseGame() {
-        SOUND.pauseSnakeHiss();
-        this.setState({ paused: true });
-        this.setCookie(COOKIEKEYS.state, this.state);
+        // Only pause the game if game is not over and it's not paused
+        if(!this.state.gameOver && !this.state.paused) {
+            SOUND.pauseSnakeHiss();
+            this.setState({ paused: true });
+            setCookie({
+                cookies: this.props.cookies,
+                gameType: NAME.snakeXenzia,
+                gameKey: COOKIES_KEYS.state,
+                gameValue: this.state,
+            });
+        }
     }
 
     resumeGame() {
@@ -677,29 +858,55 @@ export class Field extends React.Component {
         this.startGame();
     }
 
-    togglePlayPause() {
-        if(this.state.paused) {
-            this.resumeGame();
-        } else {
-            this.pauseGame();
-        }
+    resetGame() {
+        this.resetState();
+        this.beginGame();
+    }
+
+    beginGame() {
+        // console.log("Begin Game...")
+
+        // if player has clicked the 'Don't show again' on the guide
+        // just set countdown for the player and start game
+        // console.log({
+        //     isGuideCancelled: this.state.isGuideCancelled,
+        //     isGuideDeleted: this.state.isGuideDeleted
+        // })
+        // if(this.state.isGuideDeleted || this.state.isGuideCancelled) {
+            this.preparePlayer(); // play countdown
+            this.startGame();
+        // }
     }
 
     componentDidMount() {
         window.addEventListener('keydown', this.updateMoveDirection);
-        this.preparePlayer();
-        this.startGame();
 
-        // If the user leaves the window tab, Add a fucntion to pause the game
+        // Start by showing the guide,
+        this.setState({ isGuideCancelled: false })
+
+        // then begin the game
+        this.beginGame();
+
+        // If the user leaves the window tab, pause the game
         window.addEventListener("blur", this.pauseGame);
         window.addEventListener("pagehide", this.pauseGame);
-    
+
+        // User should be able to rotate the field on a Desktop device
+        window.addEventListener("mousedown", this.setDraggableTrue);
+        window.addEventListener("mouseup", this.setDraggableFalse);
+        window.addEventListener("mousemove", this.dragField);
+
+        window.addEventListener("orientationchange", this.updatePadDimension);
     }
     
     componentWillUnmount() {
         window.removeEventListener('keydown', this.updateMoveDirection);
         window.removeEventListener("blur", this.pauseGame);
         window.removeEventListener("pagehide", this.pauseGame);
+        window.removeEventListener("mousedown", this.setDraggableTrue);
+        window.removeEventListener("mouseup", this.setDraggableFalse);
+        window.removeEventListener("mousemove", this.dragField);
+        window.removeEventListener("orientationchange", this.updatePadDimension);
     }
 
     highscoreBoard() {
@@ -707,7 +914,7 @@ export class Field extends React.Component {
         return (
             <div className="highscore-board" style={{ opacity: opacity }}>
                 <div className="score-label">H-Score: </div>
-                <div className="score">
+                <div className="score" style={{borderRadius: "0px 0px 4px 4px"}}>
                     {this.state.highscore}
                 </div>
             </div>
@@ -719,14 +926,14 @@ export class Field extends React.Component {
         document.body.style.backgroundImage = "url('')";
         return(
             <div id="game-boundary">
-
                 <div className="fullscreen-highscore">
                     {this.highscoreBoard()}
                     <button className="fullscreen-toggle">
                         <i
                             className={"fa fa-" + this.state.fullscreenMode}
                             onClick={() => this.toogleFullScreen(this.state.fullscreenMode)}
-                            ></i>
+                            >
+                        </i>
                     </button>
                 </div>
 
@@ -747,6 +954,11 @@ export class Field extends React.Component {
                     vibrate={this.state.vibrate}
                     resetGame={this.resetGame}
                     score={this.state.score}
+                    rotateX={this.state.rotateX}
+                    isGuideCancelled={this.state.isGuideCancelled}
+                    cancelPlayerGuide={this.cancelPlayerGuide}
+                    isGuideDeleted={this.state.isGuideDeleted}
+                    deletePlayerGuide={this.deletePlayerGuide}
                 />
                 
                 {/* 
@@ -755,19 +967,20 @@ export class Field extends React.Component {
                        border-bottom and border-top for pad-up and pad-down color
                 */}
                 {
-                    !isMobile? null:
-                        <Pad 
-                            onPadDirChange={this.onPadDirChange}
-                            color={this.state.padColor}
-                        />
-                }
-                {
-                    !isMobile? null:
-                        <ChangePadColor
-                            padColor={this.state.padColor}
-                            nextPadColor={this.state.nextPadColor}
-                            changePadColor={this.changePadColor}
-                        />
+                    isMobile && (
+                        <>
+                            <Pad 
+                                onPadDirChange={this.onPadDirChange}
+                                color={this.state.padColor}
+                                padDimen={this.state.padDimen}
+                            />
+                            <ChangePadColor
+                                padColor={this.state.padColor}
+                                nextPadColor={this.state.nextPadColor}
+                                changePadColor={this.changePadColor}
+                            />
+                        </>
+                    )
                 }
             </div>
         )

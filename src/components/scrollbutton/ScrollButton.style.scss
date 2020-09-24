@@ -1,0 +1,98 @@
+@import '../VALUES/colors.scss';
+@import '../VALUES/styles.scss';
+@import '../VALUES/dimens.scss';
+
+.scroll-button {
+    position: fixed; /* Fixed/sticky position */
+    bottom: 24px; /* Place the button at the bottom of the page */
+    right: 24px; /* Place the button 30px from the right */
+    z-index: $zIndexMax; /* Make sure it does not overlap */
+    border-radius: 50%;
+    outline: none;
+    width: $scrollButtonDim;
+    height: $scrollButtonDim;
+    cursor: pointer;
+    @include transition-all-easeInOut(.3s);
+    @include scroll-shadow;
+    @include flex-col-center-center;
+    background-color: $siteColor1;
+    
+    i {
+        color: $siteColor1;
+        font-size: $scrollButtonDim;
+        border-radius: inherit;
+    }
+    
+    &:hover {
+        @include scroll-shadow-hover;
+        background-color: $white;
+    }
+}
+
+svg.angle-up {
+    width: 100%;
+    height: 100%;
+    @include transition-all-easeInOut(.3s);
+
+    path {
+        stroke: $white;
+        stroke-width: 6px;
+        stroke-linecap: round;
+        fill: none;
+        @include transition-all-easeInOut(.3s);
+    }
+
+    &:hover {
+        path {
+            stroke: $siteColor1;
+        }
+    }
+}
+
+.fade-enter {
+    opacity: 0;
+    display: none;
+}
+
+.fade-enter-active {
+    opacity: 1;
+    display: block;
+    -moz-animation: fade-in $scrollButtonTransitionDuration linear 1;
+    -ms-animation: fade-in $scrollButtonTransitionDuration linear 1;
+    -o-animation: fade-in $scrollButtonTransitionDuration linear 1;
+    -webkit-animation: fade-in $scrollButtonTransitionDuration linear 1;
+    animation: fade-in $scrollButtonTransitionDuration linear 1;
+}
+
+@keyframes fade-in {
+    from { 
+        opacity: 0;
+    }
+
+    to { 
+        opacity: 1; 
+    }
+}
+
+@-webkit-keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-exit {
+    opacity: 1;
+    display: block;
+}
+
+.fade-exit-active {
+    opacity: 0;
+    display: none;
+    -moz-animation: fade-out-global $scrollButtonTransitionDuration linear 1;
+    -ms-animation: fade-out-global $scrollButtonTransitionDuration linear 1;
+    -o-animation: fade-out-global $scrollButtonTransitionDuration linear 1;
+    -webkit-animation: fade-out-global $scrollButtonTransitionDuration linear 1;
+    animation: fade-out-global $scrollButtonTransitionDuration linear 1;
+}
+
+
+

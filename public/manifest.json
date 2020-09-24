@@ -1,6 +1,6 @@
 {
-  "short_name": "Snake Xenzia | JetO",
-  "name": "Play Snake Xenzia | JetO",
+  "short_name": "Game Village | JetO",
+  "name": "Game Village | JetO",
   "icons": [
     {
       "src": "JetO.ico",
@@ -8,12 +8,12 @@
       "type": "image/x-icon"
     },
     {
-      "src": "JetO192.png",
+      "src": "JetO192Alone.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "JetO512.png",
+      "src": "JetO512Alone.png",
       "type": "image/png",
       "sizes": "512x512"
     }

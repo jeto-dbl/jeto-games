@@ -31,7 +31,7 @@ export function PageNotFound({pageTitle}) {
                     {errorList}
                     <li>
                         Or go to our 
-                        <Link to="/home"> home page</Link>,
+                        <Link to="/"> home page</Link>,
                         and use the menus to navigate to a specific section.
                     </li>
                 </ul>

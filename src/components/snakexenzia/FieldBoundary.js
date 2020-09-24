@@ -1,13 +1,21 @@
 import React from 'react';
 
 import './SnakeXenzia.style.scss'
+import { 
+    browserBreadth, 
+    browserLength, 
+    isMobile,
+    FIELD_PORTION,
+} from "./Util";
 import Snake from './Snake';
 import Food from './Food';
+// eslint-disable-next-line
+import PlayerGuide from './PlayerGuide';
 
 
 const CountdownBoard = (props) => {
     return(
-        props.countdown <= 0 ? null :
+        props.countdown > 0 && (
             <div className="game-over-board">
                 <div className="game-over">
                     <div className="advise">
@@ -18,18 +26,19 @@ const CountdownBoard = (props) => {
                     </div>
                     <div className="level">
                         Level {props.level}
-                        <div className="level-left">
+                        <div className="level-remaining">
                             of {props.FIELD_IMAGES.length-1}
                         </div>
                     </div>
                 </div>
             </div>
+        )
     )
 }
 
 const GameOverBoard = (props) => {
     return(
-        !props.gameOver ? null :
+        props.gameOver && (
             <div className="game-over-board">
                 <div className="game-over">
                     <div className="level" style={{ opacity: '1' }}>
@@ -45,6 +54,7 @@ const GameOverBoard = (props) => {
                     </button>
                 </div>
             </div>
+        )
     )
 }
 
@@ -55,7 +65,7 @@ const ResumeGameBoard = (props) => {
         border: '5px solid #00FFFF',
     }
     return (
-        !props.paused ? null :
+        props.paused && (
             <div className="game-over-board">
                 <div className="game-over">
                     <button
@@ -66,13 +76,14 @@ const ResumeGameBoard = (props) => {
                     </button>
                 </div>
             </div>
+        )
     )
 }
 
 const BonusLifeBar = (props) => {
     const style = { width: `${props.bonusLife}%` }
     return (
-        !props.hasBonus ? "" :
+        props.hasBonus && (
             <div className="bonus-life-bar">
                 <div className="progress-cont">
                     <div
@@ -81,6 +92,7 @@ const BonusLifeBar = (props) => {
                     ></div>
                 </div>
             </div>
+        )
     )
 }
 
@@ -96,7 +108,7 @@ const ScoreBoard = (props) => {
 }
 
 
-export default function FieldBoundary(props) {
+const FieldBoundary = (props) => {
     const level = props.level;
     const FIELD_IMAGES = props.FIELD_IMAGES;
     const countdown = props.countdown;
@@ -108,17 +120,32 @@ export default function FieldBoundary(props) {
     const bonusLife = props.bonusLife;
     const gameOver = props.gameOver;
     const paused = props.paused;
-    const resumeGame = props.resumeGame;
-    const togglePlayPause = props.togglePlayPause;
-    const resetGame = props.resetGame;
     const vibrate = props.vibrate;
     const score = props.score;
     const vibrateClass = vibrate ? "vibrate" : "";
+    const rotateX = isMobile ? 0 : props.rotateX; // Only apply for Desktops
+    const resumeGame = props.resumeGame;
+    const togglePlayPause = props.togglePlayPause;
+    const resetGame = props.resetGame;
+    // eslint-disable-next-line
+    const isGuideCancelled = props.isGuideCancelled
+    // eslint-disable-next-line
+    const cancelPlayerGuide = props.cancelPlayerGuide
+    // eslint-disable-next-line
+    const isGuideDeleted = props.isGuideDeleted
+    // eslint-disable-next-line
+    const deletePlayerGuide = props.deletePlayerGuide 
 
-    const WINDOW_WIDTH = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    const WINDOW_HEIGHT = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    const FIELD_WIDTH = Math.min(WINDOW_WIDTH, WINDOW_HEIGHT) - 10;
-    const style = {width: `${FIELD_WIDTH}px`, height: `${FIELD_WIDTH}px`};
+    const FIELD_MARGIN = 10;  // space between the field of play and the browser's edge
+    const FIELD_WIDTH = Math.min(browserBreadth(), FIELD_PORTION * browserLength()) - FIELD_MARGIN;
+
+    const style = {
+        width: `${FIELD_WIDTH}px`, 
+        height: `${FIELD_WIDTH}px`,
+        transform: `rotateX(${rotateX}deg) translateY(-${rotateX*2}px)`,
+    };
+
+    
     return(
         <div className={`field-boundary ${vibrateClass}`} style={style}>
             {/*
@@ -128,23 +155,24 @@ export default function FieldBoundary(props) {
             {
                 FIELD_IMAGES.map((fieldImage, idx, arr) => {
                     const opacity = level === idx ? 1 : 0;
-                    return (<div
-                                key={idx}
-                                className={`field  ${vibrateClass}`}
-                                onDoubleClick={togglePlayPause}
-                                style={{
-                                    backgroundImage: `url(${fieldImage})`,
-                                    zIndex: arr.length - idx,
-                                    opacity: opacity,
-                                }}>
+                    return (
+                        <div
+                            key={idx}
+                            className={`field  ${vibrateClass}`}
+                            onDoubleClick={togglePlayPause}
+                            style={{
+                                backgroundImage: `url(${fieldImage})`,
+                                zIndex: arr.length - idx,
+                                opacity: opacity,
+                            }}>
 
                                 {/* Display a bonus life bar if there is a bonus food */}
                                 <BonusLifeBar
                                     bonusLife={bonusLife}
                                     hasBonus={hasBonus}
                                 />
+
                                 {/* Countdown board */}
-                                
                                 <CountdownBoard 
                                     countdown={countdown}
                                     level={level}
@@ -170,14 +198,27 @@ export default function FieldBoundary(props) {
                                     eat={eat}
                                 />
 
-                                <Food food={food} numFoodEaten={snake.length - 3} isBonus={hasBonus} />
+                                <Food 
+                                    food={food} 
+                                    numFoodEaten={snake.length - 3} 
+                                    hasBonus={hasBonus}
+                                />
                                 
                                 <ScoreBoard 
                                     score={score}
                                 />
-                    </div>)
+                        </div>
+                    )
                 })
             }
+            {/* <PlayerGuide
+                isGuideCancelled={isGuideCancelled}
+                cancelPlayerGuide={cancelPlayerGuide}
+                isGuideDeleted={isGuideDeleted}
+                deletePlayerGuide={deletePlayerGuide}
+            /> */}
         </div>
     )
 }
+
+export default FieldBoundary;

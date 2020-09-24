@@ -1,8 +1,19 @@
+@import './components/VALUES/colors.scss';
+
+:root {
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+}
+
 * {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   color: #444444;
   line-height: 1.6;
+  margin: 0;
+  padding: 0;
 }
 
 a, a:link, a:visited {
@@ -12,6 +23,7 @@ a, a:link, a:visited {
 ul, ol {
   margin: 0;
   padding: 0;
+  list-style-type: none;
 }
 
 body {
@@ -22,7 +34,7 @@ body {
               'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: url('./assests/static/images/home/cool-black-background.jpg') no-repeat center center fixed;
+  background: url('./assets/images/home/cool-black-background.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -45,4 +57,34 @@ noscript {
   align-items: center;
   text-align: center;
   font-size: 30px;
+}
+
+/* width */
+::-webkit-scrollbar {
+  max-width: 10px;
+}
+
+@mixin colorWithAlpha {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 4px #ccc; 
+  border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #ccc; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #aaa; 
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: $siteColor2; 
 }

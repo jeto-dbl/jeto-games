@@ -1,0 +1,48 @@
+@import '../VALUES/colors.scss';
+@import '../VALUES/styles.scss';
+@import '../VALUES/dimens.scss';
+
+$color: rgba($color: black, $alpha: .5);
+
+.trademark {
+    @include flex-col-center-center;
+    position: relative;
+    flex-wrap: wrap;
+    padding: 30px 10px 30px 10px;
+    background-color: $siteColor2RGBA;
+    overflow: hidden;
+    
+    .owner-trademark {
+        color: $color;
+        padding: 10px;
+        font-weight: 600;
+
+    }
+
+    .jeto-trademark {
+        
+        a {
+            padding: 10px;
+            @include flex-row-center-center;
+            flex-wrap: wrap;
+            border-radius: 5px;
+            transition: all .5s ease-in-out;
+            span {
+                color: $color;
+                margin: 0px 2px;
+                transition: all .1s ease-in-out;
+            }
+            img {
+                margin: 0px 8px;
+                width: 72px;
+                height: 72px;
+            }
+
+            &:hover {
+                span {
+                    font-size: 18px;
+                }
+            }
+        }
+    }
+}

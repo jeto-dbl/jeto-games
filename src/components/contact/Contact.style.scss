@@ -1,0 +1,83 @@
+@import '../VALUES/colors.scss';
+@import '../VALUES/dimens.scss';
+@import '../VALUES/styles.scss';
+
+$transitionDuration: 1.5s;
+
+.contact {
+    @include flex-col;
+}
+
+.grid-container {
+    @include neumorphic-shadow-inset($siteColor1, $siteColor1);
+    display: -moz-grid;
+    display: -webkit-grid;
+    display: grid;
+    gap: 20px 20px;
+    padding: 10px;
+    grid-template-columns: auto auto auto;  // use only 3 columns with auto width
+    grid-template-rows: auto auto auto;  // use only 3 columns with auto width
+}
+
+.social-handles {
+    position: relative;
+}
+
+.handle {
+    position: relative;
+    @include flex-col-center-center;
+    border-radius: 30px;
+    padding: 40px 20px;
+    background-color: rgba($color: #000000, $alpha: 0.4);
+    @include transition(all, $transitionDuration, 0s);
+    @include neumorphic-shadow-inset($siteColor1, $siteColor1);
+    
+    &:first-child {
+        grid-row: 1 / span 2;
+    }
+    
+    &:hover {
+        // @include neumorphic-shadow($siteColor1, $siteColor1);
+        @include neumorphic-shadow-hover($siteColor1, $siteColor1);
+    }
+    
+    &:active {
+        // @include neumorphic-shadow-active($siteColor1, $siteColor1);
+        @include neumorphic-shadow-hover($siteColor1, $siteColor1);
+    }
+
+    .handle-icon {
+        @include flex-col-center-center;
+        @include transition(all, $transitionDuration, 0s);
+        > i {
+            font-size: 24px;
+            &:first-child {
+                font-size: 28px;
+            }
+        }
+    
+        
+    }
+    
+    .handle-text {
+        transition: all .4s;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+}
+
+
+
+@media only screen and (max-width: $mobileWidth) {
+    .grid-container {
+        grid-template-columns: auto auto;  // use only 2 columns with auto width
+        grid-template-rows: auto auto;  // use only 2 columns with auto width
+    }
+}
+
+@media only screen and (max-width: $smallMobileWidth) {
+    .grid-container {
+        grid-template-columns: auto;  // use only 2 columns with auto width
+        grid-template-rows: auto;  // use only 2 columns with auto width
+    }
+}

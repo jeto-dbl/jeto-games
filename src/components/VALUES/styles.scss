@@ -1,0 +1,356 @@
+@import 'colors.scss';
+
+
+$faintBackgroundColor: rgba($color: $siteColor2, $alpha: .15);
+$listBorder: 1px solid rgba($color: $siteColor2, $alpha: .25);
+$bloodColor: #8A0303;
+
+
+@font-face {
+    src: url("../../assets/fonts/Kessel105Text-Heavy.ttf");
+    font-family: kessel-heavy;
+}
+  
+@font-face {
+    src: url("../../assets/fonts/Kessel105Text-Bold.ttf");
+    font-family: kessel-bold;
+}
+  
+@font-face {
+    src: url("../../assets/fonts/Kessel105Text-Light.ttf");
+    font-family: kessel-light;
+}
+  
+@font-face {
+    src: url("../../assets/fonts/Kessel105Text-Book.ttf");
+    font-family: kessel-book;
+}
+  
+@font-face {
+    font-family: scoreFont;
+    src: url('../../assets/fonts/CursedTimerUlil-Aznm.ttf');
+}
+
+@font-face {
+    font-family: labelFont;
+    src: url('../../assets/fonts/DangerOnTheMotorway-xV10.ttf');
+}
+
+@mixin flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-row {
+    @include flex-row;
+}
+
+@mixin flex-row-start {
+    @include flex-row;
+    align-items: flex-start;
+}
+
+.flex-row-start {
+    @include flex-row-start;
+}
+
+@mixin flex-row-between-center {
+    @include flex-row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex-row-between-center {
+    @include flex-row-between-center;
+}
+
+@mixin flex-row-center-center {
+    @include flex-row;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-row-center-center {
+    @include flex-row-center-center;
+}
+
+@mixin flex-row-center {
+    @include flex-row;
+    justify-content: center;
+}
+
+.flex-row-center {
+    @include flex-row-center;
+}
+
+@mixin flex-row-evenly {
+    @include flex-row;
+    justify-content: space-evenly;
+}
+
+.flex-row-evenly {
+    @include flex-row-evenly;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+@mixin flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-col {
+    @include flex-col;
+}
+
+@mixin flex-col-between-start {
+    @include flex-col;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.flex-col-between-start {
+    @include flex-col-between-start;
+}
+
+@mixin flex-col-between-end {
+    @include flex-col;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.flex-col-between-end {
+    @include flex-col-between-end;
+}
+
+@mixin flex-col-center-center {
+    @include flex-col;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-col-center-center {
+    @include flex-col-center-center;
+}
+
+@mixin flex-col-center {
+    @include flex-col;
+    justify-content: center;
+}
+
+.flex-col-center {
+    @include flex-col-center;
+}
+
+@mixin flex-col-stretch {
+    @include flex-col;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.flex-col-stretch {
+    @include flex-col-stretch;
+}
+
+@mixin neumorphic-shadow($color1, $color2) {
+    -moz-box-shadow: -6px -6px 9px $color1, 6px 6px 9px rgba($color2, .4);
+    -ms-box-shadow: -6px -6px 9px $color1, 6px 6px 9px rgba($color2, .4);
+    -o-box-shadow: -6px -6px 9px $color1, 6px 6px 9px rgba($color2, .4);
+    -webkit-box-shadow: -6px -6px 9px $color1, 6px 6px 9px rgba($color2, .4);
+    box-shadow: -6px -6px 9px $color1, 6px 6px 9px rgba($color2, .4);
+    -webkit-appearance: none;
+}
+
+@mixin neumorphic-shadow-hover($color1, $color2) {
+    -moz-box-shadow: -2px -2px 4px $color1, 2px 2px 4px rgba($color2, .4);
+    -ms-box-shadow: -2px -2px 4px $color1, 2px 2px 4px rgba($color2, .4);
+    -o-box-shadow: -2px -2px 4px $color1, 2px 2px 4px rgba($color2, .4);
+    -webkit-box-shadow: -2px -2px 4px $color1, 2px 2px 4px rgba($color2, .4);
+    box-shadow: -2px -2px 4px $color1, 2px 2px 4px rgba($color2, .4);
+    -webkit-appearance: none;
+}
+
+@mixin neumorphic-shadow-active($color1, $color2) {
+    -moz-box-shadow: inset -3px -3px 6px $color1, inset 3px 3px 6px rgba($color2, .4);
+    -ms-box-shadow: inset -3px -3px 6px $color1, inset 3px 3px 6px rgba($color2, .4);
+    -o-box-shadow: inset -3px -3px 6px $color1, inset 3px 3px 6px rgba($color2, .4);
+    -webkit-box-shadow: inset -3px -3px 6px $color1, inset 3px 3px 6px rgba($color2, .4);
+    box-shadow: inset -3px -3px 6px $color1, inset 3px 3px 6px rgba($color2, .4);
+    -webkit-appearance: none;
+}
+
+@mixin neumorphic-shadow-inset($color1, $color2) {
+    -moz-box-shadow: inset -6px -6px 9px $color1, inset 6px 6px 9px rgba($color2, .4);
+    -ms-box-shadow: inset -6px -6px 9px $color1, inset 6px 6px 9px rgba($color2, .4);
+    -o-box-shadow: inset -6px -6px 9px $color1, inset 6px 6px 9px rgba($color2, .4);
+    -webkit-box-shadow: inset -6px -6px 9px $color1, inset 6px 6px 9px rgba($color2, .4);
+    box-shadow: inset -6px -6px 9px $color1, inset 6px 6px 9px rgba($color2, .4);
+    -webkit-appearance: none;
+}
+
+@mixin transition-all-easeInOut($duration) {
+    -moz-transition: all $duration ease-in-out;
+    -ms-transition: all $duration ease-in-out;
+    -o-transition: all $duration ease-in-out;
+    -webkit-transition: all $duration ease-in-out;
+    transition: all $duration ease-in-out;
+}
+
+@mixin transition($prop, $duration, $delay) {
+    -moz-transition: $prop $duration $delay;
+    -ms-transition: $prop $duration $delay;
+    -o-transition: $prop $duration $delay;
+    -webkit-transition: $prop $duration $delay;
+    transition: $prop $duration $delay;
+}
+
+@keyframes fade-out-global {
+    from { 
+        opacity: 1; 
+        display: block;
+    }
+
+    to { 
+        opacity: 0; 
+        display: none;
+    }
+}
+
+@-webkit-keyframes fade-out-global {
+    from { 
+        opacity: 1; 
+        display: block;
+    }
+
+    to { 
+        opacity: 0; 
+        display: none;
+    }
+}
+
+@keyframes fade-in-global {
+    from { 
+        opacity: 0.95; 
+        // display: none;
+    }
+
+    to { 
+        opacity: 1; 
+        // display: block;
+    }
+}
+
+@-webkit-keyframes fade-in-global {
+    from { 
+        opacity: 0.4; 
+        // display: none;
+    }
+
+    to { 
+        opacity: 1; 
+        // display: block;
+    }
+}
+
+@mixin animation($name, $duration, $timingFunction, $delay, $iterationCount, $fillMode) {
+    -moz-animation: $name $duration $timingFunction $delay $iterationCount $fillMode;
+    -ms-animation: $name $duration $timingFunction $delay $iterationCount $fillMode;
+    -o-animation: $name $duration $timingFunction $delay $iterationCount $fillMode;
+    -webkit-animation: $name $duration $timingFunction $delay $iterationCount $fillMode;
+    animation: $name $duration $timingFunction $delay $iterationCount $fillMode;
+}
+
+@mixin transform-translate-rotate($tx, $ty, $rz) {
+    -moz-transform: translate($tx, $ty) rotate($rz); 
+    -ms-transform: translate($tx, $ty) rotate($rz); 
+    -o-transform: translate($tx, $ty) rotate($rz); 
+    -webkit-transform: translate($tx, $ty) rotate($rz); 
+    transform: translate($tx, $ty) rotate($rz); 
+}
+
+@mixin transform-scale($sx, $sy) {
+    -moz-transform: scale($sx, $sy);
+    -ms-transform: scale($sx, $sy);
+    -o-transform: scale($sx, $sy);
+    -webkit-transform: scale($sx, $sy);
+    transform: scale($sx, $sy);
+}
+
+@mixin prespective-transform-style-3d {
+    -moz-perspective: 1200px;
+    -ms-perspective: 1200px;
+    -o-perspective: 1200px;
+    -webkit-perspective: 1200px;
+    perspective: 1200px;
+
+    -moz-transform-style: preserve-3d;
+    -ms-transform-style: preserve-3d;
+    -o-transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+
+@mixin box-shadow($h1, $v1, $b1, $s1, $op1, $h2, $v2, $b2, $s2, $op2) {
+    -moz-box-shadow: $h1 $v1 $b1 $s1 rgba(0, 0, 0, $op1), $h2 $v2 $b2 $s1 rgba(0, 0, 0, $op2);
+    -ms-box-shadow: $h1 $v1 $b1 $s1 rgba(0, 0, 0, $op1), $h2 $v2 $b2 $s1 rgba(0, 0, 0, $op2);
+    -o-box-shadow: $h1 $v1 $b1 $s1 rgba(0, 0, 0, $op1), $h2 $v2 $b2 $s1 rgba(0, 0, 0, $op2);
+    -webkit-box-shadow: $h1 $v1 $b1 $s1 rgba(0, 0, 0, $op1), $h2 $v2 $b2 $s1 rgba(0, 0, 0, $op2);
+    box-shadow: $h1 $v1 $b1 $s1 rgba(0, 0, 0, $op1), $h2 $v2 $b2 $s1 rgba(0, 0, 0, $op2);
+    -webkit-appearance: none;
+}
+
+@mixin scroll-shadow {
+    @include box-shadow(2px, 2px, 4px, 0, 0.4, 0, 0, 0, 0, 0);
+}
+
+@mixin scroll-shadow-hover {
+    @include box-shadow(4px, 4px, 6px, 0, 0.4, 0, 0, 0, 0, 0);
+}
+
+.shadow-xs	{
+    @include box-shadow(0, 0, 0, 1px, 0.05, 0, 0, 0, 0, 0);
+}
+
+.shadow-sm	{
+    @include box-shadow(0, 1px, 2px, 0, 0.05, 0, 0, 0, 0, 0);
+}
+
+.shadow	{
+    @include box-shadow(0, 1px, 3px, 0, 0.1, 0, 1px, 2px, 0, 0.06);
+}
+
+.shadow-md	{
+    @include box-shadow(0, 4px, 6px, -1px, 0.1, 0, 2px, 4px, -1px, 0.06);
+}
+
+.shadow-lg	{
+    @include box-shadow(0, 10px, 15px, -3px, 0.1, 0, 4px, 6px, -2px, 0.05);
+}
+
+.shadow-xl	{
+    @include box-shadow(0, 20px, 25px, -5px, 0.1, 0, 10px, 10px, -5px, 0.04);
+}
+
+.shadow-2xl	{
+    @include box-shadow(0, 25px, 50px, -12px, 0.25, 0, 0, 0, 0, 0);
+}
+
+.shadow-inner	{
+    @include box-shadow(0, 2px, 4px, 0, 0.06, 0, 0, 0, 0, 0);
+}
+
+.shadow-outline	{
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    -webkit-appearance: none;
+}
+
+.shadow-none	{
+    box-shadow: none;
+    -webkit-appearance: none;
+}
+
+.shadow {
+    @include box-shadow(0, 4px, 8px, 0, 0.3, 0, 0, 0, 0, 0);
+}

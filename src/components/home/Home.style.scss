@@ -1,104 +1,96 @@
-@import "../../general.scss";
+@import '../VALUES/colors.scss';
+@import '../VALUES/styles.scss';
+@import '../VALUES/dimens.scss';
 
-$transition: .4s;
-
-.flex-row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    // align-items: center;
-}
-
-.flex-col {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
+$transitionDuration: .5s;
 
 .home {
     position: relative;
-    width: 100vw;
+    width: calc(100vw - (100vw - 100%));
     height: 100vh;
     // border: 2px dotted pink;
 }
 
 .games {
-    padding: 10px;
+    margin: 10px;
     margin-bottom: 20vh;
 }
 
-.game {
-    // border: 1px solid blue;
-    margin: 10px;
-    padding: 4px 40px;
-    border-radius: 12px;
-    background-color: white;
-    box-shadow: $shadowLg;
+figure.game,
+figcaption,
+img {
+    border-radius: 30px;
+    border: none;
+}
 
+.a-game {
+    margin: 15px 10px;
+}
+
+figure.game {
+    position: relative;
+    width: 260px;
+    height: 250px;
+    @include transition(all, $transitionDuration, 0s);
+    @include neumorphic-shadow($siteColor1, $siteColor1);
+   
+    &:active {
+        @include neumorphic-shadow-active($siteColor2, $siteColor2);
+    }
+    
     &:hover {
-        box-shadow: $shadow2xl;
+        @include neumorphic-shadow-hover($siteColor2, $siteColor2);
         figcaption {
-            background-color: rgba(0, 0, 0, 0.75);
-
+            background-color: rgba(0, 0, 0, 0.85);
+            
             span {
-                font-size: 29px;
                 color: $colorAccent;
             }
-
-            span:after {
-                // content: "Play";
-                // content: "\f095";
-                content: "\f04b";
-                font-family: FontAwesome;
-                color: rgb(0, 128, 255);
-                // color: white;
-            }
         }
-    }
-
-    div {
-        position: relative;
-        padding: 0;
-        width: 250px;
-        height: 100%;
-        transition: $transition;
-        // margin: 10px;
-        // border: 1px solid black;
     }
 
     img {
         width: 100%;
         height: 100%;
         display: block; // To remove extra white space (around 3px) at the bottom of image.
+        @include transition(all, $transitionDuration, 0s);
         // border: 1px solid red;
     }
 
     figcaption {
         position: absolute;
+        text-align: center;
         top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
-        color: white;
+        color: $white;
+        @include transition(all, $transitionDuration, 0s);
         background-color: rgba(0, 0, 0, 0.7);
-        transition: $transition;
         // border: 1px solid blue;
 
         span {
-            color: white;
-            font-size: 28px;
+            display: block;
+            color: $white;
+            font-size: 38px;
+            padding: 10px;
             font-family: Helvetica;
-            transition: $transition;
+            @include transition(all, $transitionDuration, 0s);
         }
     }
 }
 
-@media only screen and (max-width: 320px) {
-    .game {
-        div {
-            width: 200px;
+
+@media only screen and (max-width: $smallMobileWidth) {
+    figure.game {
+        width: 100%;
+        height: 250px;
+
+        figcaption {
+            span {
+                font-size: 44px;
+            }
         }
     }
-}
 
+}

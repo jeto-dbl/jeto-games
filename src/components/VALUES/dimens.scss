@@ -1,0 +1,37 @@
+/*
+    Any modification here must be done in './dimens.js'
+*/
+// @import '../../index.scss';
+
+// $smallMobileWidth: var(--breakpoint-sm, 576px);;
+// $mobileWidth: var(--breakpoint-md, 768px); // from root's "index.scss"
+// $largeMobileWidth: var(--breakpoint-lg, 992px);
+// $xtraLargeMobileWidth: var(--breakpoint-sm, 1200px);
+
+$tinyMobileWidth: 320px;
+$smallMobileWidth: 576px;
+$mobileWidth: 768px;
+$largeMobileWidth: 992px;
+$xtraLargeMobileWidth: 1200px;
+
+$barrierHeight: 60px;
+$dashboardWidth: 100%;
+
+$dashboardTransitionDuration: .5s;
+$scrollButtonTransitionDuration: 1s;
+
+$zIndexNeg10: -10;
+$zIndexNeg20: -20;
+$zIndexNeg30: -30;
+$zIndexNeg40: -40;
+$zIndexNeg50: -50;
+$zIndexNegMax: -999;
+
+$zIndex10: 10;
+$zIndex20: 20;
+$zIndex30: 30;
+$zIndex40: 40;
+$zIndex50: 50;
+$zIndexMax: 999;
+
+$scrollButtonDim: 48px;

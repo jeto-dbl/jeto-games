@@ -1,31 +1,30 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react';
 import { 
   HashRouter,
   Route,
   Switch,
 } from "react-router-dom";
-
-
 import './App.scss';
-// eslint-disable-next-line
-import { RouteList } from "./Routes";
-import DisplayDevelopment from "./components/displaydev";
 
+import DisplayDevelopment from "./components/displaydev";
 import Home from './components/home';
 import SnakeXenzia from './components/snakexenzia'
 import PageNotFound from "./components/pagenotfound"
 
 
 function App() {
-  const [isLoading, setLoading] = useState(true)
-  useEffect(() => setLoading(false), []);
-  // Display loading page till the App component is mounted
+  const [isLoading, setLoading] = React.useState(true)
+  React.useEffect(() => setLoading(false), []);
+
+  // 1. Display loading page till the App component is mounted
+  // 2. if isLogo is true then it would use brand designed logo
+  //    as the loading icon else would use general icon
   if (isLoading) return (<DisplayDevelopment isLogo={true} />)
   else
     return (
       
         <HashRouter basename="/">
-            <div className="App">
+            <div className="app">
               <Switch>
                 {/* <RouteList /> */}
                 <Route exact path="/">
@@ -34,7 +33,7 @@ function App() {
                 <Route exact path="/home">
                   <Home pageTitle="Welcome to the Game Village | JetO" />
                 </Route>
-                <Route exact path="/JetO-Games">
+                <Route exact path="/jeto-games">
                   <Home pageTitle="Welcome to the Game Village | JetO" />
                 </Route>
                 <Route exact path="/snake-xenzia">

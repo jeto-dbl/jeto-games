@@ -1,0 +1,1 @@
+export { JetOTradeMark as default } from './JetOTradeMark';

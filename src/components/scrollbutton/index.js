@@ -1,0 +1,1 @@
+export {ScrollButton as default} from './ScrollButton';

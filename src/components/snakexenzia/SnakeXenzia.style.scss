@@ -1,21 +1,25 @@
+@import '../VALUES/styles.scss';
+@import '../VALUES/dimens.scss';
+@import '../VALUES/colors.scss';
+
 $BOX_SIZE: 4%;
 $BOX_SIZE_INC: 4.05%;
-$sharpEdgeR: 100%;
-$curveEdgeR: 8px;
-$arrowIndicateColor: #f1f1f11f;
-$bloodColor: #8A0303;
 
 
 #game-boundary {
-    position: relative;
-    width: 100vw;
-    min-height: 100vh;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     flex-wrap: wrap;
     align-items: center;
+
+    position: relative;
+    width: 100vw;
+    min-height: 100vh;
     padding: 5px;
+
+    @include prespective-transform-style-3d;
+    // border: 1px solid red;
 }
 
 // Snake Game
@@ -24,6 +28,7 @@ $bloodColor: #8A0303;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+
     overflow: hidden;
 }
 
@@ -33,9 +38,10 @@ $bloodColor: #8A0303;
     width: 550px;
     height: 550px;
     border-radius: 5px;
-    box-shadow: 0px 0px 8px 4px rgba(0, 0, 0, .5);
-    -webkit-box-shadow: 0px 0px 8px 4px rgba(0, 0, 0, .5);
     margin: 0px auto;
+    -webkit-box-shadow: 0px 0px 8px 4px rgba(0, 0, 0, .5);
+    box-shadow: 0px 0px 8px 4px rgba(0, 0, 0, .5);
+    @include prespective-transform-style-3d;
 }
 
 .field {
@@ -52,10 +58,9 @@ $bloodColor: #8A0303;
     overflow: hidden;
     border: none;
     opacity: 0;
-    animation: showField .5s linear 1;
-    -webkit-animation: showField .5s linear 1;
-
+    @include animation(showField, 0.5s, linear, 0s, 1, none);
 }
+
 
 @keyframes showField {
     from {
@@ -66,10 +71,26 @@ $bloodColor: #8A0303;
         opacity: 1;
     }
 }
+
+@-webkit-keyframes showField {
+    from {
+        opacity: 0;
+    }
+    
+    to {
+        opacity: 1;
+    }
+}
 // END => Field style
 
 // Snake Box Style
 .snake-box {
+    // To make the snake-head-dot stay at the center
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
     position: absolute;
     width: $BOX_SIZE;
     height: $BOX_SIZE;
@@ -78,16 +99,11 @@ $bloodColor: #8A0303;
     background-color: #9F454B;
     background-color: #5C1424;
     background-color: #936451;
-    z-index: 4;
+    z-index: $zIndex30;
     font-size: 10px;
     color: white;
     text-align: center;
 
-    // To make the snake-head-dot stay at the center
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
 
 .vibrate {
@@ -95,54 +111,78 @@ $bloodColor: #8A0303;
   (i.e. 500 milliseconds). 
   This is the same as the VIBRATE_MILLISECONDS in the Util.js file
   */
-  animation: shake 0.5s 1;
-  -webkit-animation: shake 0.5s 1;
+  @include animation(shake, 0.5s, linear, 0s, 1, none);
 }
 
 @keyframes shake {
     0% { 
-        transform: translate(1px, 1px) rotate(0deg); 
-        -webkit-transform: translate(1px, 1px) rotate(0deg); 
+        @include transform-translate-rotate(1px, 1px, 0deg);
     }
     10% { 
-        transform: translate(-1px, -2px) rotate(-1deg); 
-        -webkit-transform: translate(-1px, -2px) rotate(-1deg); 
+        @include transform-translate-rotate(-1px, -2px, -1deg);
     }
     20% { 
-        transform: translate(-3px, 0px) rotate(1deg); 
-        -webkit-transform: translate(-3px, 0px) rotate(1deg); 
+        @include transform-translate-rotate(-3px, 0px, 1deg);
     }
     30% { 
-        transform: translate(3px, 2px) rotate(0deg); 
-        -webkit-transform: translate(3px, 2px) rotate(0deg); 
+        @include transform-translate-rotate(3px, 2px, 0deg); 
     }
     40% { 
-        transform: translate(1px, -1px) rotate(1deg); 
-        -webkit-transform: translate(1px, -1px) rotate(1deg); 
+        @include transform-translate-rotate(1px, -1px, 1deg);
     }
-    50% { 
-        transform: translate(-1px, 2px) rotate(-1deg); 
-        -webkit-transform: translate(-1px, 2px) rotate(-1deg); 
+    50% {
+        @include transform-translate-rotate(-1px, 2px, -1deg);
     }
     60% { 
-        transform: translate(-3px, 1px) rotate(0deg); 
-        -webkit-transform: translate(-3px, 1px) rotate(0deg); 
+        @include transform-translate-rotate(-3px, 1px, 0deg);
     }
     70% { 
-        transform: translate(3px, 1px) rotate(-1deg); 
-        -webkit-transform: translate(3px, 1px) rotate(-1deg); 
+        @include transform-translate-rotate(3px, 1px, -1deg);
     }
     80% { 
-        transform: translate(-1px, -1px) rotate(1deg); 
-        -webkit-transform: translate(-1px, -1px) rotate(1deg); 
+        @include transform-translate-rotate(-1px, -1px, 1deg);
     }
     90% { 
-        transform: translate(1px, 2px) rotate(0deg); 
-        -webkit-transform: translate(1px, 2px) rotate(0deg); 
+        @include transform-translate-rotate(1px, 2px, 0deg);
     }
     100% { 
-        transform: translate(1px, -2px) rotate(-1deg); 
-        -webkit-transform: translate(1px, -2px) rotate(-1deg); 
+        @include transform-translate-rotate(1px, -2px, -1deg);
+    }
+}
+
+@-webkit-keyframes shake {
+    0% { 
+        @include transform-translate-rotate(1px, 1px, 0deg);
+    }
+    10% { 
+        @include transform-translate-rotate(-1px, -2px, -1deg);
+    }
+    20% { 
+        @include transform-translate-rotate(-3px, 0px, 1deg);
+    }
+    30% { 
+        @include transform-translate-rotate(3px, 2px, 0deg); 
+    }
+    40% { 
+        @include transform-translate-rotate(1px, -1px, 1deg);
+    }
+    50% {
+        @include transform-translate-rotate(-1px, 2px, -1deg);
+    }
+    60% { 
+        @include transform-translate-rotate(-3px, 1px, 0deg);
+    }
+    70% { 
+        @include transform-translate-rotate(3px, 1px, -1deg);
+    }
+    80% { 
+        @include transform-translate-rotate(-1px, -1px, 1deg);
+    }
+    90% { 
+        @include transform-translate-rotate(1px, 2px, 0deg);
+    }
+    100% { 
+        @include transform-translate-rotate(1px, -2px, -1deg);
     }
 }
 
@@ -151,17 +191,30 @@ $bloodColor: #8A0303;
     height: 40%;
     background-color: $bloodColor;
     border-radius: 50%;
-    box-shadow: inset 0px 0px 4px 2px rgba(0, 0, 0, .19);
     -webkit-box-shadow: inset 0px 0px 4px 2px rgba(0, 0, 0, .19);
+    box-shadow: inset 0px 0px 4px 2px rgba(0, 0, 0, .19);
 }
 
 .eat-animate {
     border: 4px dotted #8A0303;
-    animation: eatAnimation .05s linear infinite;
-    -webkit-animation: eatAnimation .05s linear infinite;
+    @include animation(eatAnimation, 0.05s, linear, 0s, infinite, none);
 }
 
 @keyframes eatAnimation {
+    0% {
+        border: 4px dotted #8A0303;
+    }
+
+    50% {
+        border: 0px dotted #8A0303;
+    }
+
+    100% {
+        border: 4px dotted #8A0303;
+    }
+}
+
+@-webkit-keyframes eatAnimation {
     0% {
         border: 4px dotted #8A0303;
     }
@@ -183,39 +236,100 @@ $bloodColor: #8A0303;
     height: $BOX_SIZE;
     background-color: yellow;
     border-radius: 50%;
-    box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
-    -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
-    z-index: 2;
+    z-index: $zIndex20;
     color: green;
     font-size: 8px;
     text-align: center;
     font-weight: 600;
     pointer-events: none;
-    animation: blinkBonusFood .4s infinite;
-    -webkit-animation: blinkBonusFood .4s infinite;
+    -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+    box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+    @include animation(blinkBonusFood, 0.4s, ease, 0s, infinite, none);
     
 }
 
 @keyframes blinkBonusFood {
     0% {
-        box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
-        -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
         width: $BOX_SIZE;
         height: $BOX_SIZE; 
+        -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+        box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
     }
 
     50% {
-        box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .7);
-        -webkit-box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .7);
         width: $BOX_SIZE_INC;
         height: $BOX_SIZE_INC;
+        -webkit-box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .7);
+        box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .7);
     }
 
     100% {
-        box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
-        -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
         width: $BOX_SIZE;
         height: $BOX_SIZE; 
+        -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+        box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+    }
+}
+
+@-webkit-keyframes blinkBonusFood {
+    0% {
+        width: $BOX_SIZE;
+        height: $BOX_SIZE; 
+        -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+        box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+    }
+
+    50% {
+        width: $BOX_SIZE_INC;
+        height: $BOX_SIZE_INC;
+        -webkit-box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .7);
+        box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .7);
+    }
+
+    100% {
+        width: $BOX_SIZE;
+        height: $BOX_SIZE; 
+        -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+        box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+    }
+}
+
+$foodDim: 15px;
+.snake-food-3d {
+    width: $foodDim;
+    height: $foodDim;
+    position: absolute;
+    // top: 50%;
+    // left: 50%;
+    transform-style: preserve-3d;
+    transform:
+        rotateX(240deg)
+        rotateY(-5deg)
+        rotateZ(-155deg)
+    ;
+
+    .side {
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        position: absolute;
+        border-radius: 10%;
+    }
+    .top {
+        transform: translateZ(-$foodDim);
+        background: #ff0;
+    }
+    .front {
+        transform: rotateX(90deg);
+        transform-origin: bottom;
+        background: #ff0;
+    }
+    .left {
+        width: $foodDim;
+        transform: translateZ(-$foodDim) rotateY(90deg);
+        transform-origin: right;
+        background: #ff0;
     }
 }
 
@@ -225,75 +339,87 @@ $bloodColor: #8A0303;
     height: $BOX_SIZE;
     background-color: yellow;
     border-radius: 50%;
-    z-index: 2;
+    z-index: $zIndex20;
     color: green;
     font-size: 8px;
     text-align: center;
     font-weight: 600;
-    box-shadow: 0px 0px 8px 4px rgba($color: #000000, $alpha: .5);
-    -webkit-box-shadow: 0px 0px 8px 4px rgba($color: #000000, $alpha: .5);
-    animation: blinkFood 1.3s infinite;
-    -webkit-animation: blinkFood 1.3s infinite;
     pointer-events: none;
+
+    -webkit-box-shadow: 0px 0px 8px 4px rgba($color: #000000, $alpha: .5);
+    box-shadow: 0px 0px 8px 4px rgba($color: #000000, $alpha: .5);
+    // box-shadow: 4px 2px 2px 0px rgba($color: #000, $alpha: .8);
+
+    @include animation(blinkFood, 1.3s, ease, 0s, infinite, none);
 }
 
 @keyframes blinkFood {
     0% {
-        box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
-        -webkit-box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
         width: $BOX_SIZE;
         height: $BOX_SIZE; 
+        -webkit-box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
+        box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
+        // box-shadow: 4px 2px 2px 0px rgba($color: #000, $alpha: .8);
     }
 
     50% {
-        box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .5);
-        -webkit-box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .5);
         width: $BOX_SIZE_INC;
         height: $BOX_SIZE_INC;
+        -webkit-box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .5);
+        box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .5);
     }
 
     100% {
-        box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
-        -webkit-box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
         width: $BOX_SIZE;
         height: $BOX_SIZE; 
+        -webkit-box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
+        box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
+        // box-shadow: 4px 2px 2px 0px rgba($color: #000, $alpha: .8);
+    }
+}
+
+@-webkit-keyframes blinkFood {
+    0% {
+        width: $BOX_SIZE;
+        height: $BOX_SIZE; 
+        -webkit-box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
+        box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
+        // box-shadow: 4px 2px 2px 0px rgba($color: #000, $alpha: .8);
+    }
+
+    50% {
+        width: $BOX_SIZE_INC;
+        height: $BOX_SIZE_INC;
+        -webkit-box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .5);
+        box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .5);
+    }
+
+    100% {
+        width: $BOX_SIZE;
+        height: $BOX_SIZE; 
+        -webkit-box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
+        box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
+        // box-shadow: 4px 2px 2px 0px rgba($color: #000, $alpha: .8);
     }
 }
 // END => Snake Food Style
 
 // Pad Style (for mobile)
-.pad-boundary {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    margin: 0px auto;
-}
-
-.pad {
-    position: relative;
-    background-color: rgba(0, 0, 0, .4);
-    width: 104px;
-    height: 104px;
-    border-radius: 50%;
-    box-shadow: 0px 0px 4px 2px rgba(0, 255, 255, .3);
-    -webkit-box-shadow: 0px 0px 4px 2px rgba(0, 255, 255, .3);
-}
-
 .pad-color-change {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
     position: absolute;
     bottom: 12px;
-    right: 8px;
+    right: 10px;
     width: 50px;
     height: 72px;
     border-radius: 5px;
     box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, .19);
     -webkit-box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, .19);
     background-color: rgba(8, 107, 107, .3);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
     
     div {
         width: 100%;
@@ -304,10 +430,11 @@ $bloodColor: #8A0303;
     cursor: pointer;
     width: 100%;
     min-height: 35px;
+    text-align: center;
+    // border: 1px solid red;
 
     &:active {
-        transform: scale(0.8, 0.8);
-        -webkit-transform: scale(0.8, 0.8);
+        @include transform-scale(0.8, 0.8);
     }
 }
 
@@ -325,27 +452,6 @@ $bloodColor: #8A0303;
     margin: 0;
 }
 
-.horizontal-dir, .vertical-dir {
-    position: absolute;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.horizontal-dir {
-    width: 100%;
-    top: 50%;
-    margin-top: -18px;
-    flex-direction: row;
-}
-
-.vertical-dir {
-    height: 100%;
-    left: 50%;
-    margin-left: -18px;
-    flex-direction: column;
-}
-
 button {
     cursor: pointer;
     outline: none;
@@ -354,20 +460,124 @@ button {
 }
 
 button:active {
-    transform: scale(0.9, 0.9);
-    -webkit-transform: scale(0.9, 0.9);
+    @include transform-scale(0.9, 0.9);
 }
+
+.pad-boundary {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0px auto;
+
+    // border: 1px solid white;
+}
+
+// You just need to change the $padDim and the pad
+// would automatically adjust itself.
+$padDim: 150px;
+// so as to make the arrows almost touching each other at the curved portion
+$truncatedPadDim: calc(#{$padDim} - 0.04 * #{$padDim}); // 0.04 => 4%
+$lengthFact: 0.4; // => 40%
+$breadthFact: 0.20 + 0.08; // => 20% + 8%
+// Note that double of the length plus the breadth would give the pad dimension
+// but to make the breadth a little bigger and beautiful, 
+// we increase the breadth factor by 8%
+$length: calc(#{$padDim} * #{$lengthFact});
+$breadth: calc(#{$padDim} * #{$breadthFact});
+// Up and Down arrow are grouped into vertical direction,
+// left and right arrow are grouped into horizontal direction
+// hence after positioning absolutely with a 50% from top or left,
+// we need to centralize it by shifting it back (-ve) by half of the arrow breadth
+$negativeShiftDimen: calc(#{$breadth} * (-1) / 2);
+
+.pad {
+    position: relative;
+    background-color: rgba(0, 0, 0, .4);
+    width: $truncatedPadDim;
+    height: $truncatedPadDim;
+    border-radius: 50%;
+    box-shadow: 0px 0px 4px 2px rgba(0, 255, 255, .3);
+    -webkit-box-shadow: 0px 0px 4px 2px rgba(0, 255, 255, .3);
+    // border: 1px solid red;
+}
+
+.horizontal-dir, .vertical-dir {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // border: 1px solid green;
+}
+
+.horizontal-dir {
+    width: 100%;
+    left: 0;
+    top: 50%;
+    margin-top: $negativeShiftDimen; // to centralize it
+    flex-direction: row;
+}
+
+.vertical-dir {
+    height: 100%;
+    top: 0;
+    left: 50%;
+    margin-left: $negativeShiftDimen; // to centralize it
+    flex-direction: column;
+}
+
+
+#up-arrow, #down-arrow {
+    width: $breadth;
+    height: $length;
+}
+
+#right-arrow, #left-arrow {
+    width: $length;
+    height: $breadth;
+}
+
+$curveEdgeRadius: 100%;
+$sharpEdgeRadius: 16px;
 
 .arrow {
     position: relative;
     background-color: rgb(224, 255, 255);
     background-color: rgb(0, 255, 255);
     background-color: rgb(0,206,209);
-    box-shadow: inset 0px 0px 2px 1px;
+    background: radial-gradient( rgb(0, 206, 209), rgb(0, 255, 255), rgb(224, 255, 255));
     -webkit-box-shadow: inset 0px 0px 2px 1px;
-    margin: 4px;
-    background: radial-gradient( rgb(0,206,209), rgb(0, 255, 255), rgb(224, 255, 255));
+    box-shadow: inset 0px 0px 2px 1px;
+    // border: 1px solid yellow;
 }
+
+#up-arrow {
+    border-radius: $sharpEdgeRadius $sharpEdgeRadius $curveEdgeRadius $curveEdgeRadius;
+}
+
+#down-arrow {
+    border-radius: $curveEdgeRadius $curveEdgeRadius $sharpEdgeRadius $sharpEdgeRadius;
+}
+
+#right-arrow {
+    border-radius: $curveEdgeRadius $sharpEdgeRadius $sharpEdgeRadius $curveEdgeRadius;
+}
+
+#left-arrow {
+    border-radius: $sharpEdgeRadius $curveEdgeRadius $curveEdgeRadius $sharpEdgeRadius;
+}
+
+// NOTE: Arrow indicator thickness should (by preference) be the same as the breadth of the Arrow
+// Arrow indicator thickness consist of double a border width (thickness),
+// but we need the half of this double, so we can with ease, put it to the border props
+// hence we reduce the breadth by half (or 50%)
+// Note that you can by preference change the percentage.
+$arrowIndicatorThickness: calc(#{$breadth} * 0.5); // 0.5 => 50%
+$arrowIndicatorThicknessNeg: calc(#{$arrowIndicatorThickness} * (-1));
+// The space from border is just to make sure that the arrow indicators are not touching the arrows
+$spaceFromPadBorder: 8px;
+$doubleArrowIndicatorThicknessNeg: calc((#{$arrowIndicatorThickness} * 2 + #{$spaceFromPadBorder}) * (-1));
+$arrowIndicatorColor: #f1f1f11f;
 
 .small-arrow-left,
 .small-arrow-right,
@@ -375,83 +585,45 @@ button:active {
 .small-arrow-down
 {
     position: absolute;
-    display: inline-block;
-    border: 10px solid transparent;
+    display: inline-block; // to make the border thickness evident
+    border: $arrowIndicatorThickness solid transparent;
 }
 
 .small-arrow-left {
-    left: -30px;
     bottom: 50%;
-    margin-bottom: -10px;
-    border-right: 10px solid $arrowIndicateColor;
-
+    border-right: $arrowIndicatorThickness solid $arrowIndicatorColor;
+    left: $doubleArrowIndicatorThicknessNeg;
+    margin-bottom: $arrowIndicatorThicknessNeg;
 }
 
 .small-arrow-right {
-    right: -30px;
     bottom: 50%;
-    margin-bottom: -10px;
-    border-left: 10px solid $arrowIndicateColor;
-
+    border-left: $arrowIndicatorThickness solid $arrowIndicatorColor;
+    right: $doubleArrowIndicatorThicknessNeg;
+    margin-bottom: $arrowIndicatorThicknessNeg;
 }
 
 .small-arrow-up {
-    top: -30px;
     left: 50%;
-    margin-left: -10px;
-    border-bottom: 10px solid $arrowIndicateColor;
-
+    border-bottom: $arrowIndicatorThickness solid $arrowIndicatorColor;
+    top: $doubleArrowIndicatorThicknessNeg;
+    margin-left: $arrowIndicatorThicknessNeg;
 }
 
 .small-arrow-down {
-    bottom: -30px;
     left: 50%;
-    margin-left: -10px;
-    border-top: 10px solid $arrowIndicateColor;
-
+    border-top: $arrowIndicatorThickness solid $arrowIndicatorColor;
+    bottom: $doubleArrowIndicatorThicknessNeg;
+    margin-left: $arrowIndicatorThicknessNeg;
 }
 
-#up-arrow, #down-arrow {
-    width: 28px;
-    height: 40px;
-}
-
-#right-arrow, #left-arrow {
-    width: 40px;
-    height: 28px;
-}
-
-#up-arrow {
-    border-radius: $curveEdgeR $curveEdgeR $sharpEdgeR $sharpEdgeR;
-}
-
-#down-arrow {
-    border-radius: $sharpEdgeR $sharpEdgeR $curveEdgeR $curveEdgeR;
-}
-
-#right-arrow {
-    border-radius: $sharpEdgeR $curveEdgeR $curveEdgeR $sharpEdgeR;
-}
-
-#left-arrow {
-    border-radius: $curveEdgeR $sharpEdgeR $sharpEdgeR $curveEdgeR;
-}
 // END => Pad Style
 
 // Score Board Style
-@font-face {
-    font-family: scoreFont;
-    src: url('../../assests/static/fonts/CursedTimerUlil-Aznm.ttf');
-}
-
-@font-face {
-    font-family: labelFont;
-    src: url('../../assests/static/fonts/DangerOnTheMotorway-xV10.ttf');
-}
-
 .score-board {
     display: flex;
     flex-direction: row;
+
     position: absolute;
     bottom: 5px;
     right: 5px;
@@ -461,11 +633,12 @@ button:active {
     background-color: #000;
     background-color: rgb(128,128,128);
     background-color: rgb(105,105,105);
-    pointer-events: none;
+    pointer-events: none !important;
 }
 
 .score-label, .score {
     font-size: 14px;
+    pointer-events: none !important;
 }
 
 .score-label {
@@ -484,20 +657,22 @@ button:active {
     letter-spacing: .2em;
     border-radius: 0 4px 4px 0;
     padding: 2px 4px;
+    text-align: center;
 }
 
 .highscore-board {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 .fullscreen-highscore {
-    position: absolute;
-    top: 4px;
-    right: 5px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    position: absolute;
+    top: 4px;
+    right: 5px;
 }
 
 .fullscreen-toggle {
@@ -520,28 +695,29 @@ button:active {
 // Game Over Board Style
 .advise {
     display: none;
-    pointer-events: none;
+    pointer-events: none !important;
 }
 
-.countdown, .level, .level-left {
+.countdown, .level, .level-remaining {
     color: rgb(163, 207, 250);
     font-family: scoreFont;
     font-weight: 500;
     font-size: 80px;
-    pointer-events: none;
+    pointer-events: none !important;
 }
 
 .level {
-    animation: showLevel 4s linear 1;
-    -webkit-animation: showLevel 4s linear 1;
     opacity: 0;
     font-size: 40px;
+    @include animation(showLevel, 4s, linear, 0s, 1, none);
+    pointer-events: none !important;
 }
 
-.level-left {
+.level-remaining {
     color: rgb(39, 137, 235);
     font-size: 18px;
     text-align: right;
+    pointer-events: none !important;
 }
 
 .progress-cont,
@@ -575,12 +751,25 @@ button:active {
 }
 
 .countdown {
-    animation: showCountDown 3s linear 1;
-    -webkit-animation: showCountDown 3s linear 1;
     opacity: 1;
+    @include animation(showCountDown, 3s, linear, 0s, 1, none);
 }
 
 @keyframes showLevel {
+    0% {
+        opacity: 0;
+    }
+    
+    50% {
+        opacity: 1;
+    }
+    
+    100% {
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes showLevel {
     0% {
         opacity: 0;
     }
@@ -604,21 +793,37 @@ button:active {
     }
 }
 
+@-webkit-keyframes showCountDown {
+    0% {
+        opacity: 0;
+    }
+    
+    100% {
+        opacity: 1;
+    }
+}
+
 .game-over-board {
-    position: absolute;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 10;
+
+    position: absolute;
+    z-index: $zIndex40;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    background-color: rgba(0, 0, 0, .65);
+    background-color: rgba(0, 0, 0, .45);
 }
 
 .game-over {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
     padding: 20px;
     border-radius: 5px;
 }
@@ -630,12 +835,33 @@ button:active {
     letter-spacing: .2em;
     color: rgba(255, 0, 0, 1);
     margin-top: 0px;
-    animation: fromTop 3s linear 1;
-    -webkit-animation: fromTop 3s linear 1;
-    pointer-events: none;
+    pointer-events: none !important;
+    @include animation(fromTop, 3s, linear, 0s, 1, none);
 }
 
 @keyframes fromTop {
+    0% {
+        margin-top: -200px;
+    }
+
+    60% {
+        margin-top: 20px;
+    }
+
+    75% {
+        margin-top: -20px;
+    }
+
+    90% {
+        margin-top: -10px;
+    }
+
+    100% {
+        margin-top: 0px;
+    }
+}
+
+@-webkit-keyframes fromTop {
     0% {
         margin-top: -200px;
     }
@@ -672,26 +898,35 @@ button:active {
     border: 6px solid rgb(163, 10, 10);
     box-shadow: inset 0px 0px 4px 2px rgba(0, 0, 0, .2);
     -webkit-box-shadow: inset 0px 0px 4px 2px rgba(0, 0, 0, .2);
-    animation: pulse 2s linear 3.5s infinite;
-    -webkit-animation: pulse 2s linear 3.5s infinite;
-    transform: scale(.9);
-    -webkit-transform: scale(.9);
+    @include animation(pulse, 2s, linear, 0.5s, infinite, none);
+    @include transform-scale(0.9, 0.9);
 }
 
 @keyframes pulse {
     0% {
-        transform: scale(1);
-        -webkit-transform: scale(1);
+        @include transform-scale(1, 1);
     }
 
     50% {
-        transform: scale(.9);
-        -webkit-transform: scale(.9);
+        @include transform-scale(0.9, 0.9);
     }
     
     100% {
-        transform: scale(1);
-        -webkit-transform: scale(1);
+        @include transform-scale(1, 1);
+    }
+}
+
+@-webkit-keyframes pulse {
+    0% {
+        @include transform-scale(1, 1);
+    }
+
+    50% {
+        @include transform-scale(0.9, 0.9);
+    }
+    
+    100% {
+        @include transform-scale(1, 1);
     }
 }
 
@@ -699,7 +934,245 @@ button:active {
     color: rgb(0, 128, 255);
 }
 
-@media only screen and (orientation: landscape) {
+// START OF USER'S GUIDE
+.player-guide-modal {
+    @include flex-col-center-center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba($color: #000000, $alpha: 0.6);
+    padding: 10px 0px;
+    z-index: $zIndex50;
+    // @extend .expand-animation;
+    // border: 1px solid red;
+}
+
+.player-guide {
+    @include flex-col;
+    position: relative;
+    width: 100%;
+    height: 300px;
+    max-height: 300px;
+    overflow-x: auto;
+    background-color: $white;
+    @extend .expand-animation;
+    // z-index: $zIndex50;
+    // border: 1px solid blue;
+}
+
+.button {
+    padding: 5px 10px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 5px;
+}
+
+.disable-button {
+    opacity: 0.1;
+    cursor: default;
+    // pointer-events: none !important;
+}
+
+.prev, .next {
+    @extend .button;
+    position: absolute;
+    top: 0;
+    border-radius: 1px;
+    font-weight: 600;
+    font-size: 18px;
+    height: 50px; // equivalent to the height of the .guide-header
+    z-index: $zIndexMax;
+    // border: 1px solid red;
+
+    &:hover, &:active {
+        font-weight: 900;
+    }
+}
+
+.prev { 
+    left: 0;
+    padding: 5px 20px 5px 10px;
+}
+
+.next { 
+    right: 0;
+    padding: 5px 10px 5px 20px;
+}
+
+.guide {
+    background-color: $white;
+    width: 100%;
+    @include transition(all, .4s, 0s)
+    // border: 1px solid red;
+}
+
+$slideDuration: 1s;
+
+.fade-in-guide {
+    @include animation(fade-in-global, $slideDuration, linear, 0s, 1, none);
+}
+
+.guide-header {
+    text-align: center;
+    font-size: 24px;
+    padding: 5px 10px;
+    height: 50px;
+    // border-bottom: 1px solid #aaa;
+    @include box-shadow(0, 2px, 2px, 1px, 0.05, 0, 0, 0, 0, 0);
+}
+
+.guide-body {
+    padding: 0px 10px;
+    
+    ul{
+        height: 200px;
+        max-height: 200px;
+        overflow-y: auto;
+        // border: 1px solid black;
+
+        li {
+            padding: 6px 0px;
+            border-radius: 5px;
+            @include flex-row;
+            // border: 1px solid #ccc;
+            
+            .marker {
+                &::before {
+                    content: '\2713';
+                    // display: inline-block;
+                    color: $siteColor1;
+                    padding: 0 6px 0 0;
+                }
+            }
+            
+            .content {
+                text-align: justify;
+            }
+        }
+    }
+}
+
+.guide-footer {
+    @include flex-row-between-center;
+    @include box-shadow(0, -2px, 2px, 1px, 0.05, 0, 0, 0, 0, 0);
+    padding: 10px;
+    height: 50px;
+    z-index: $zIndexMax;
+    // margin: auto 0px; // absord extra space
+
+    .cancel-guide {
+        @extend .button;
+        color: $siteColor1;
+        @include transition(all, .4s, 0s);
+        &:hover, &:active {
+            border: 1px solid $siteColor1;
+        }
+    }
+
+    .delete {
+        @extend .button;
+        border: 1px solid $bloodColor;
+        color: $bloodColor;
+        @include transition(all, .4s, 0s);
+        &:hover, &:active {
+            color: $white;
+            border: 1px solid transparent;
+            background-color: rgba($color: $bloodColor, $alpha: 1);
+        }
+    }
+}
+
+.slide-dots {
+    @include flex-row-between-center;
+    padding: 2px;
+    // border: 1px solid blue;
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        margin: 0px 3px;
+        border-radius: 50%;
+        outline: none;
+        border: none;
+        cursor: pointer;
+        background-color: #bbb;
+        @include transition(background-color, $slideDuration, 0s);
+        
+        &:hover {
+            background-color: #717171 !important;
+        }
+    }
+}
+
+$animationDuration: .5s;
+
+.fade-out-modal-animation {
+    @include animation(fade-out-modal, $animationDuration, linear, 0s, 1, none);
+}
+
+.shrink-animation {
+    @include animation(shrink, $animationDuration, linear, 0s, 1, forwards);
+}
+
+.expand-animation {
+    @include animation(expand, $animationDuration, linear, 0s, 1, forwards);
+}
+
+@keyframes expand {
+    from {
+        opacity: 0;
+        @include transform-scale(0.8, 0.8);
+    }
+    to {
+        opacity: 1;
+        @include transform-scale(1, 1);
+    }
+}
+
+@keyframes shrink {
+    from {
+        opacity: 1;
+        @include transform-scale(1, 1);
+    }
+    to {
+        opacity: 0;
+        @include transform-scale(0, 0);
+    }
+}
+
+@-webkit-keyframes shrink {
+    from {
+        opacity: 1;
+        @include transform-scale(1, 1);
+        width: 100%;
+        height: auto;
+    }
+    to {
+        opacity: 0;
+        @include transform-scale(0, 0);
+        width: 0;
+        height: 0;
+    }
+}
+
+@keyframes fade-out-modal {
+    from { display: flex; }
+    to { display: none; }
+    // from { visibility: visible; }
+    // to { visibility: hidden; }
+}
+
+@-webkit-keyframes fade-out-modal {
+    from { display: flex; }
+    to { display: none; }
+    // from { visibility: visible; }
+    // to { visibility: hidden; }
+}
+// END OF USER'S GUIDE
+
+@media screen and (orientation: landscape) {
     .game-boundary {
         flex-direction: row;
     }
@@ -714,7 +1187,7 @@ button:active {
     }
 }
 
-@media only screen and (orientation: portrait) {
+@media screen and (orientation: portrait) {
     .game-boundary {
         flex-direction: column;
         padding-bottom: 45px;
@@ -740,6 +1213,44 @@ button:active {
     .field-boundary {
         width: 550px;
         height: 550px;
+        transform: rotateX(25deg) translateY(-50px);
+    }
+
+    // Modify this shake animation for 3D
+    @keyframes shake {
+        0% { 
+            @include transform-translate-rotate(1px, 1px, 0deg);
+        }
+        10% { 
+            @include transform-translate-rotate(-1px, -2px, -1deg);
+        }
+        20% { 
+            @include transform-translate-rotate(-3px, 0px, 1deg);
+        }
+        30% { 
+            @include transform-translate-rotate(3px, 2px, 0deg); 
+        }
+        40% { 
+            @include transform-translate-rotate(1px, -1px, 1deg);
+        }
+        50% { 
+            @include transform-translate-rotate(-1px, 2px, -1deg);
+        }
+        60% { 
+            @include transform-translate-rotate(-3px, 1px, 0deg);
+        }
+        70% { 
+            @include transform-translate-rotate(3px, 1px, -1deg);
+        }
+        80% { 
+            @include transform-translate-rotate(-1px, -1px, 1deg);
+        }
+        90% { 
+            @include transform-translate-rotate(1px, 2px, 0deg);
+        }
+        100% { 
+            @include transform-translate-rotate(1px, -2px, -1deg);
+        }
     }
 }
 

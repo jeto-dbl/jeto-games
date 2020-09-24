@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './DisplayDevelopment.style.scss';
 
 
 export function DisplayDevelopment({ isLogo }) {
     // eslint-disable-next-line
-    const [pageName, setPageName] = useState("Current")
+    const [pageName, setPageName] = React.useState("Current");
 
     if (isLogo){
         return (
