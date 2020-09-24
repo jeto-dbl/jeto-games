@@ -6,7 +6,7 @@
 
 
 <img 
-    src="https://raw.githubusercontent.com/Oyelson/JetO-Games/master/src/assets/media/snake-xenzia/screenshots/game-on-play.png" 
+    src="https://raw.githubusercontent.com/jeto-dbl/JetO-Games/master/src/assets/media/snake-xenzia/screenshots/game-on-play.png" 
     alt="Snake moving" 
     width="623" 
     height="350">
@@ -15,7 +15,7 @@
 
 
 <img 
-    src="https://raw.githubusercontent.com/Oyelson/JetO-Games/master/src/assets/media/snake-xenzia/screenshots/pause-game-snake.png" 
+    src="https://raw.githubusercontent.com/jeto-dbl/jeto-games/master/src/assets/media/snake-xenzia/screenshots/pause-game-snake.png" 
     alt="Snake game paused" 
     width="623" 
     height="350">
@@ -24,7 +24,7 @@
 
 
 <img 
-    src="https://raw.githubusercontent.com/Oyelson/JetO-Games/master/src/assets/media/snake-xenzia/screenshots/game-over-snake.png" 
+    src="https://raw.githubusercontent.com/jeto-dbl/jeto-games/master/src/assets/media/snake-xenzia/screenshots/game-over-snake.png" 
     alt="Snake game over" 
     width="623" 
     height="350">
@@ -33,11 +33,11 @@
 
 
 <img 
-    src="https://raw.githubusercontent.com/Oyelson/JetO-Games/master/src/assets/media/snake-xenzia/screenshots/new-level-snake.png" 
+    src="https://raw.githubusercontent.com/jeto-dbl/jeto-games/master/src/assets/media/snake-xenzia/screenshots/new-level-snake.png" 
     alt="Snake new level" 
     width="623" 
     height="350">
 
 
 
-[link-to-game]: https://oyelson.github.io/JetO-Games/
+[link-to-game]: https://jeto-games.netlify.app
