@@ -7,28 +7,20 @@ $BOX_SIZE_INC: 4.05%;
 
 
 #game-boundary {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    align-items: center;
+    @include flex-row-between-center;
+    @extend .flex-wrap;
 
     position: relative;
-    width: 100vw;
+    width: calc(100vw - (100vw - 100%));
     min-height: 100vh;
-    padding: 5px;
+    padding: $fieldMargin;
 
     @include prespective-transform-style-3d;
-    // border: 1px solid red;
 }
 
 // Snake Game
 .snake-xenzia {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-
+    @include flex-row-center-center;
     overflow: hidden;
 }
 
@@ -39,8 +31,7 @@ $BOX_SIZE_INC: 4.05%;
     height: 550px;
     border-radius: 5px;
     margin: 0px auto;
-    -webkit-box-shadow: 0px 0px 8px 4px rgba(0, 0, 0, .5);
-    box-shadow: 0px 0px 8px 4px rgba(0, 0, 0, .5);
+    @include box-shadow(0px, 0px, 8px, 4px, #000, 0.5, 0, 0, 0, 0, #000, 0.0);
     @include prespective-transform-style-3d;
 }
 
@@ -52,13 +43,24 @@ $BOX_SIZE_INC: 4.05%;
     left: 0;
     border-radius: 5px;
     border: 2px inset rgba(0, 0, 0, .8);
-    background-color: rgb(127, 255, 212);
     background-repeat: no-repeat;
+    -moz-background-size: cover;
+    -ms-background-size: cover;
+    -o-background-size: cover;
+    -webkit-background-size: cover;
     background-size: cover;
-    overflow: hidden;
+    background-position: center center;
+    background-color: rgb(127, 255, 212) !important;
     border: none;
     opacity: 0;
     @include animation(showField, 0.5s, linear, 0s, 1, none);
+    // overflow: hidden;
+}
+
+@media only screen and (max-width: $smallMobileWidth) {
+    .field::before {
+        content: "";
+    }
 }
 
 
@@ -86,11 +88,7 @@ $BOX_SIZE_INC: 4.05%;
 // Snake Box Style
 .snake-box {
     // To make the snake-head-dot stay at the center
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
+    @include flex-col-center-center;
     position: absolute;
     width: $BOX_SIZE;
     height: $BOX_SIZE;
@@ -187,12 +185,13 @@ $BOX_SIZE_INC: 4.05%;
 }
 
 .snake-head-dot {
-    width: 40%;
-    height: 40%;
+    width: 50%;
+    height: 50%;
     background-color: $bloodColor;
     border-radius: 50%;
     -webkit-box-shadow: inset 0px 0px 4px 2px rgba(0, 0, 0, .19);
     box-shadow: inset 0px 0px 4px 2px rgba(0, 0, 0, .19);
+    // @include box-shadow(0px, 0px, 4px, 2px, 0.19, 0, 0, 0, 0, 0.0);
 }
 
 .eat-animate {
@@ -242,8 +241,7 @@ $BOX_SIZE_INC: 4.05%;
     text-align: center;
     font-weight: 600;
     pointer-events: none;
-    -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
-    box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+    @include box-shadow(0px, 0px, 1px, 8px, yellow, 0.7, 0, 0, 0, 0, #000, 0.0);
     @include animation(blinkBonusFood, 0.4s, ease, 0s, infinite, none);
     
 }
@@ -252,22 +250,19 @@ $BOX_SIZE_INC: 4.05%;
     0% {
         width: $BOX_SIZE;
         height: $BOX_SIZE; 
-        -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
-        box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+        @include box-shadow(0px, 0px, 1px, 8px, yellow, 0.7, 0, 0, 0, 0, #000, 0.0);
     }
-
+    
     50% {
         width: $BOX_SIZE_INC;
         height: $BOX_SIZE_INC;
-        -webkit-box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .7);
-        box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .7);
+        @include box-shadow(0px, 0px, 16px, 8px, #000, 0.7, 0, 0, 0, 0, #000, 0.0);
     }
-
+    
     100% {
         width: $BOX_SIZE;
         height: $BOX_SIZE; 
-        -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
-        box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+        @include box-shadow(0px, 0px, 1px, 8px, yellow, 0.7, 0, 0, 0, 0, #000, 0.0);
     }
 }
 
@@ -275,22 +270,19 @@ $BOX_SIZE_INC: 4.05%;
     0% {
         width: $BOX_SIZE;
         height: $BOX_SIZE; 
-        -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
-        box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+        @include box-shadow(0px, 0px, 1px, 8px, yellow, 0.7, 0, 0, 0, 0, #000, 0.0);
     }
-
+    
     50% {
         width: $BOX_SIZE_INC;
         height: $BOX_SIZE_INC;
-        -webkit-box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .7);
-        box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .7);
+        @include box-shadow(0px, 0px, 16px, 8px, #000, 0.7, 0, 0, 0, 0, #000, 0.0);
     }
-
+    
     100% {
         width: $BOX_SIZE;
-        height: $BOX_SIZE; 
-        -webkit-box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
-        box-shadow: 0px 0px 1px 8px rgba($color: yellow, $alpha: .7);
+        height: $BOX_SIZE;
+        @include box-shadow(0px, 0px, 1px, 8px, yellow, 0.7, 0, 0, 0, 0, #000, 0.0);
     }
 }
 
@@ -345,36 +337,27 @@ $foodDim: 15px;
     text-align: center;
     font-weight: 600;
     pointer-events: none;
-
-    -webkit-box-shadow: 0px 0px 8px 4px rgba($color: #000000, $alpha: .5);
-    box-shadow: 0px 0px 8px 4px rgba($color: #000000, $alpha: .5);
-    // box-shadow: 4px 2px 2px 0px rgba($color: #000, $alpha: .8);
-
+    @include box-shadow(0px, 0px, 8px, 4px, #000, 0.5, 0, 0, 0, 0, #000, 0.0);
     @include animation(blinkFood, 1.3s, ease, 0s, infinite, none);
 }
 
 @keyframes blinkFood {
     0% {
         width: $BOX_SIZE;
-        height: $BOX_SIZE; 
-        -webkit-box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
-        box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
-        // box-shadow: 4px 2px 2px 0px rgba($color: #000, $alpha: .8);
+        height: $BOX_SIZE;
+        @include box-shadow(0px, 0px, 4px, 2px, #000, 0.5, 0, 0, 0, 0, #000, 0.0);
     }
-
+    
     50% {
         width: $BOX_SIZE_INC;
         height: $BOX_SIZE_INC;
-        -webkit-box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .5);
-        box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .5);
+        @include box-shadow(0px, 0px, 16px, 8px, #000, 0.5, 0, 0, 0, 0, #000, 0.0);
     }
-
+    
     100% {
         width: $BOX_SIZE;
         height: $BOX_SIZE; 
-        -webkit-box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
-        box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
-        // box-shadow: 4px 2px 2px 0px rgba($color: #000, $alpha: .8);
+        @include box-shadow(0px, 0px, 4px, 2px, #000, 0.5, 0, 0, 0, 0, #000, 0.0);
     }
 }
 
@@ -382,44 +365,43 @@ $foodDim: 15px;
     0% {
         width: $BOX_SIZE;
         height: $BOX_SIZE; 
-        -webkit-box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
-        box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
-        // box-shadow: 4px 2px 2px 0px rgba($color: #000, $alpha: .8);
+        @include box-shadow(0px, 0px, 4px, 2px, #000, 0.5, 0, 0, 0, 0, #000, 0.0);
     }
-
+    
     50% {
         width: $BOX_SIZE_INC;
         height: $BOX_SIZE_INC;
-        -webkit-box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .5);
-        box-shadow: 0px 0px 16px 8px rgba($color: #000, $alpha: .5);
+        @include box-shadow(0px, 0px, 16px, 8px, #000, 0.5, 0, 0, 0, 0, #000, 0.0);
     }
-
+    
     100% {
         width: $BOX_SIZE;
         height: $BOX_SIZE; 
-        -webkit-box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
-        box-shadow: 0px 0px 4px 2px rgba($color: #000, $alpha: .5);
-        // box-shadow: 4px 2px 2px 0px rgba($color: #000, $alpha: .8);
+        @include box-shadow(0px, 0px, 4px, 2px, #000, 0.5, 0, 0, 0, 0, #000, 0.0);
     }
 }
 // END => Snake Food Style
 
 // Pad Style (for mobile)
-.pad-color-change {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+// .score-board--pad-color-change {
+//     @include flex-row-center-center;
+//     position: absolute;
+//     bottom: $fieldMargin;
+//     right: $fieldMargin;
+//     // border: 1px solid red;
+// }
 
+.pad-color-change {
+    @include flex-col-between-center;
     position: absolute;
-    bottom: 12px;
-    right: 10px;
+    bottom: $fieldMargin;
+    right: $fieldMargin;
     width: 50px;
     height: 72px;
+    margin-left: 10px;
     border-radius: 5px;
-    box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, .19);
-    -webkit-box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, .19);
     background-color: rgba(8, 107, 107, .3);
+    @include box-shadow(0px, 0px, 4px, 2px, #000, 0.19, 0, 0, 0, 0, #000, 0.0);
     
     div {
         width: 100%;
@@ -464,10 +446,7 @@ button:active {
 }
 
 .pad-boundary {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    @include flex-row-center-center;
     margin: 0px auto;
 
     // border: 1px solid white;
@@ -497,16 +476,13 @@ $negativeShiftDimen: calc(#{$breadth} * (-1) / 2);
     width: $truncatedPadDim;
     height: $truncatedPadDim;
     border-radius: 50%;
-    box-shadow: 0px 0px 4px 2px rgba(0, 255, 255, .3);
-    -webkit-box-shadow: 0px 0px 4px 2px rgba(0, 255, 255, .3);
+    @include box-shadow(0px, 0px, 4px, 2px, #00FFFF, 0.3, 0, 0, 0, 0, #000, 0.0);
     // border: 1px solid red;
 }
 
 .horizontal-dir, .vertical-dir {
     position: absolute;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @include flex-row-between-center;
     // border: 1px solid green;
 }
 
@@ -545,6 +521,8 @@ $sharpEdgeRadius: 16px;
     background-color: rgb(224, 255, 255);
     background-color: rgb(0, 255, 255);
     background-color: rgb(0,206,209);
+    background: -webkit-gradient( rgb(0, 206, 209), rgb(0, 255, 255), rgb(224, 255, 255));
+    background: -webkit-radial-gradient( rgb(0, 206, 209), rgb(8, 8, 8), rgb(224, 255, 255));
     background: radial-gradient( rgb(0, 206, 209), rgb(0, 255, 255), rgb(224, 255, 255));
     -webkit-box-shadow: inset 0px 0px 2px 1px;
     box-shadow: inset 0px 0px 2px 1px;
@@ -621,27 +599,44 @@ $arrowIndicatorColor: #f1f1f11f;
 
 // Score Board Style
 .score-board {
-    display: flex;
-    flex-direction: row;
-
     position: absolute;
-    bottom: 5px;
-    right: 5px;
+    bottom: -28px;
+    right: 50%;
+    min-width: $scoreBoardWidth;
+    margin-right: calc(-#{$scoreBoardWidth} / 2);
+    z-index: $zIndex30;
+}
+
+.score-board,
+.highscore-board
+{
+    @include flex-row;
+    pointer-events: none !important;
     border-radius: 5px;
-    box-shadow: -6px 6px 8px 2px rgba(0, 0, 0, 0.5);
-    -webkit-box-shadow: -6px 6px 8px 2px rgba(0, 0, 0, 0.5);
     background-color: #000;
     background-color: rgb(128,128,128);
     background-color: rgb(105,105,105);
-    pointer-events: none !important;
+    @include box-shadow(-6px, 6px, 8px, 2px, #000, 0.5, 0, 0, 0, 0, #000, 0.0);
 }
 
-.score-label, .score {
+.score-label, 
+.score,
+.highscore, 
+.highscore-label
+{
     font-size: 14px;
     pointer-events: none !important;
 }
 
 .score-label {
+    width: 45%;
+}
+
+.score {
+    width: 55%;
+}
+
+.highscore-label, .score-label {
     color: wheat;
     background-color: rgba(255, 0, 0, 0.527);
     font-family: labelFont;
@@ -649,7 +644,7 @@ $arrowIndicatorColor: #f1f1f11f;
     padding: 2px 0 2px 4px;
 }
 
-.score {
+.highscore, .score {
     color: #444444;
     background-color: white;
     font-family: scoreFont;
@@ -660,19 +655,11 @@ $arrowIndicatorColor: #f1f1f11f;
     text-align: center;
 }
 
-.highscore-board {
-    display: flex;
-    flex-direction: column;
-}
-
 .fullscreen-highscore {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-
+    @include flex-row-between;
     position: absolute;
-    top: 4px;
-    right: 5px;
+    top: $fieldMargin;
+    right: $fieldMargin;
 }
 
 .fullscreen-toggle {
@@ -680,11 +667,12 @@ $arrowIndicatorColor: #f1f1f11f;
     border-radius: 50%;
     outline: none;
     border: none;
-    margin-left: 5px;
+    margin: 0px 4px 0px 16px;
 }
 
 .fa-expand, .fa-compress {
     color: #f1f1f17a;
+    font-size: 20px;
     
     &:hover {
         color: #f1f1f1;
@@ -804,11 +792,7 @@ $arrowIndicatorColor: #f1f1f11f;
 }
 
 .game-over-board {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
+    @include flex-col-center-center;
     position: absolute;
     z-index: $zIndex40;
     width: 100%;
@@ -819,13 +803,10 @@ $arrowIndicatorColor: #f1f1f11f;
 }
 
 .game-over {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
+    @include flex-col-center-center;
     padding: 20px;
     border-radius: 5px;
+    text-align: center;
 }
 
 .game-over-title {
@@ -835,6 +816,7 @@ $arrowIndicatorColor: #f1f1f11f;
     letter-spacing: .2em;
     color: rgba(255, 0, 0, 1);
     margin-top: 0px;
+    text-align: center;
     pointer-events: none !important;
     @include animation(fromTop, 3s, linear, 0s, 1, none);
 }
@@ -934,243 +916,6 @@ $arrowIndicatorColor: #f1f1f11f;
     color: rgb(0, 128, 255);
 }
 
-// START OF USER'S GUIDE
-.player-guide-modal {
-    @include flex-col-center-center;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba($color: #000000, $alpha: 0.6);
-    padding: 10px 0px;
-    z-index: $zIndex50;
-    // @extend .expand-animation;
-    // border: 1px solid red;
-}
-
-.player-guide {
-    @include flex-col;
-    position: relative;
-    width: 100%;
-    height: 300px;
-    max-height: 300px;
-    overflow-x: auto;
-    background-color: $white;
-    @extend .expand-animation;
-    // z-index: $zIndex50;
-    // border: 1px solid blue;
-}
-
-.button {
-    padding: 5px 10px;
-    background-color: transparent;
-    border: 1px solid transparent;
-    border-radius: 5px;
-}
-
-.disable-button {
-    opacity: 0.1;
-    cursor: default;
-    // pointer-events: none !important;
-}
-
-.prev, .next {
-    @extend .button;
-    position: absolute;
-    top: 0;
-    border-radius: 1px;
-    font-weight: 600;
-    font-size: 18px;
-    height: 50px; // equivalent to the height of the .guide-header
-    z-index: $zIndexMax;
-    // border: 1px solid red;
-
-    &:hover, &:active {
-        font-weight: 900;
-    }
-}
-
-.prev { 
-    left: 0;
-    padding: 5px 20px 5px 10px;
-}
-
-.next { 
-    right: 0;
-    padding: 5px 10px 5px 20px;
-}
-
-.guide {
-    background-color: $white;
-    width: 100%;
-    @include transition(all, .4s, 0s)
-    // border: 1px solid red;
-}
-
-$slideDuration: 1s;
-
-.fade-in-guide {
-    @include animation(fade-in-global, $slideDuration, linear, 0s, 1, none);
-}
-
-.guide-header {
-    text-align: center;
-    font-size: 24px;
-    padding: 5px 10px;
-    height: 50px;
-    // border-bottom: 1px solid #aaa;
-    @include box-shadow(0, 2px, 2px, 1px, 0.05, 0, 0, 0, 0, 0);
-}
-
-.guide-body {
-    padding: 0px 10px;
-    
-    ul{
-        height: 200px;
-        max-height: 200px;
-        overflow-y: auto;
-        // border: 1px solid black;
-
-        li {
-            padding: 6px 0px;
-            border-radius: 5px;
-            @include flex-row;
-            // border: 1px solid #ccc;
-            
-            .marker {
-                &::before {
-                    content: '\2713';
-                    // display: inline-block;
-                    color: $siteColor1;
-                    padding: 0 6px 0 0;
-                }
-            }
-            
-            .content {
-                text-align: justify;
-            }
-        }
-    }
-}
-
-.guide-footer {
-    @include flex-row-between-center;
-    @include box-shadow(0, -2px, 2px, 1px, 0.05, 0, 0, 0, 0, 0);
-    padding: 10px;
-    height: 50px;
-    z-index: $zIndexMax;
-    // margin: auto 0px; // absord extra space
-
-    .cancel-guide {
-        @extend .button;
-        color: $siteColor1;
-        @include transition(all, .4s, 0s);
-        &:hover, &:active {
-            border: 1px solid $siteColor1;
-        }
-    }
-
-    .delete {
-        @extend .button;
-        border: 1px solid $bloodColor;
-        color: $bloodColor;
-        @include transition(all, .4s, 0s);
-        &:hover, &:active {
-            color: $white;
-            border: 1px solid transparent;
-            background-color: rgba($color: $bloodColor, $alpha: 1);
-        }
-    }
-}
-
-.slide-dots {
-    @include flex-row-between-center;
-    padding: 2px;
-    // border: 1px solid blue;
-
-    .dot {
-        width: 12px;
-        height: 12px;
-        margin: 0px 3px;
-        border-radius: 50%;
-        outline: none;
-        border: none;
-        cursor: pointer;
-        background-color: #bbb;
-        @include transition(background-color, $slideDuration, 0s);
-        
-        &:hover {
-            background-color: #717171 !important;
-        }
-    }
-}
-
-$animationDuration: .5s;
-
-.fade-out-modal-animation {
-    @include animation(fade-out-modal, $animationDuration, linear, 0s, 1, none);
-}
-
-.shrink-animation {
-    @include animation(shrink, $animationDuration, linear, 0s, 1, forwards);
-}
-
-.expand-animation {
-    @include animation(expand, $animationDuration, linear, 0s, 1, forwards);
-}
-
-@keyframes expand {
-    from {
-        opacity: 0;
-        @include transform-scale(0.8, 0.8);
-    }
-    to {
-        opacity: 1;
-        @include transform-scale(1, 1);
-    }
-}
-
-@keyframes shrink {
-    from {
-        opacity: 1;
-        @include transform-scale(1, 1);
-    }
-    to {
-        opacity: 0;
-        @include transform-scale(0, 0);
-    }
-}
-
-@-webkit-keyframes shrink {
-    from {
-        opacity: 1;
-        @include transform-scale(1, 1);
-        width: 100%;
-        height: auto;
-    }
-    to {
-        opacity: 0;
-        @include transform-scale(0, 0);
-        width: 0;
-        height: 0;
-    }
-}
-
-@keyframes fade-out-modal {
-    from { display: flex; }
-    to { display: none; }
-    // from { visibility: visible; }
-    // to { visibility: hidden; }
-}
-
-@-webkit-keyframes fade-out-modal {
-    from { display: flex; }
-    to { display: none; }
-    // from { visibility: visible; }
-    // to { visibility: hidden; }
-}
-// END OF USER'S GUIDE
 
 @media screen and (orientation: landscape) {
     .game-boundary {
@@ -1180,9 +925,14 @@ $animationDuration: .5s;
     .field-boundary {
         width: 300px;
         height: 300px;
+        // align-self: flex-start;
     }
 
-    .score-label, .score {
+    .score-label, 
+    .score,
+    .highscore-label,
+    .highscore 
+    {
         font-size: 12px;
     }
 }
@@ -1198,7 +948,11 @@ $animationDuration: .5s;
         height: 300px;
     }
 
-    .score-label, .score {
+    .score-label, 
+    .score,
+    .highscore-label,
+    .highscore 
+    {
         font-size: 12px;
     }
 
@@ -1208,8 +962,15 @@ $animationDuration: .5s;
     }
 }
 
+@media screen and (min-width: $smallMobileWidth) {
+    .score-board {
+        bottom: 0;
+        right: calc(-#{$scoreBoardWidth} - 4px);
+        margin: 0;
+    }
+}
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: $mobileWidth) {
     .field-boundary {
         width: 550px;
         height: 550px;

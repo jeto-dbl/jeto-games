@@ -1,0 +1,254 @@
+@import '../VALUES/colors.scss';
+@import '../VALUES/dimens.scss';
+@import '../VALUES/styles.scss';
+
+
+.button {
+    padding: 5px 10px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 5px;
+}
+
+.player-guide-modal {
+    @include flex-col-center-center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba($color: #000, $alpha: 0.3);
+    padding: 10px 0px;
+    z-index: $zIndexMax;
+    // @extend .expand-animation;
+    // border: 1px solid red;
+}
+
+$guideHeight: 60vh;
+$guideWidth: calc(100vw - (100vw - 100%) - 10vw); // 90vw
+$headerHeight: 60px;
+$footerHeight: 60px;
+
+.player-guide {
+    display: grid;
+    grid-template-rows: 1fr $footerHeight; // the 50px is for the footer
+    // gap: 20px;
+    position: relative;
+    width: $guideWidth;
+    height: $guideHeight;
+    max-height: $guideHeight;
+    overflow: auto;
+    background-color: $white;
+    z-index: $zIndexMax;
+    @extend .expand-animation;
+    // z-index: $zIndex50;
+    // border: 1px solid green;
+}
+
+$slideDuration: 1s;
+.fade-in-guide {
+    @include animation(fade-in-global, $slideDuration, linear, 0s, 1, none);
+}
+
+.guide {
+    display: grid;
+    grid-template-rows: $headerHeight 1fr; // the 50px is for the header
+    width: 100%;
+    background-color: $white;
+    @include transition(all, .4s, 0s);
+    @include transition(all, $slideDuration, 0s);
+    // border: 1px solid red;
+}
+
+.guide-header {
+    text-align: center;
+    font-size: 24px;
+    padding: 5px 10px;
+    // height = line-height + padding-top + padding-bottom
+    height: $headerHeight;
+    line-height: calc(#{$headerHeight} - 5px - 5px); // to center text in container
+    @include box-shadow(0, 2px, 2px, 1px, #000, 0.05, 0, 0, 0, 0, #000,0);
+    // border: 1px solid #aaa;
+}
+
+ul.guide-body {
+    padding: 0px 10px;
+    height: calc(#{$guideHeight} - (#{$headerHeight} + #{$footerHeight}));
+    max-height: calc(#{$guideHeight} - (#{$headerHeight} + #{$footerHeight}));
+    overflow-y: auto;
+    // pointer-events: none !important; // to active swiping of guide
+    // height: 200px;
+    // max-height: 200px;
+    // border: 1px solid black;
+
+    li {
+        padding: 6px 0px;
+        border-radius: 5px;
+        @include flex-row;
+        // border: 1px solid #ccc;
+        
+        .marker {
+            &::before {
+                content: '\2713';
+                // display: inline-block;
+                color: $siteColor1;
+                padding: 0 6px 0 0;
+            }
+        }
+        
+        .content {
+            text-align: justify;
+        }
+    }
+}
+
+.guide-footer {
+    @include flex-row-between-center;
+    @include box-shadow(0, -2px, 2px, 1px, #000, 0.05, 0, 0, 0, 0, #000, 0);
+    padding: 10px;
+    height: $footerHeight;
+    z-index: $zIndexMax;
+    // border: 1px solid blue;
+    // margin: auto 0px; // absord extra space
+
+    .cancel-guide {
+        @extend .button;
+        color: $siteColor1;
+        @include transition(all, .4s, 0s);
+        &:hover, &:active {
+            border: 1px solid $siteColor1;
+        }
+    }
+
+    .delete {
+        @extend .button;
+        border: 1px solid $bloodColor;
+        color: $bloodColor;
+        @include transition(all, .4s, 0s);
+        &:hover, &:active {
+            color: $white;
+            border: 1px solid transparent;
+            background-color: rgba($color: $bloodColor, $alpha: 1);
+        }
+    }
+}
+
+.disable-button {
+    opacity: 0.1;
+    cursor: default;
+    // pointer-events: none !important;
+}
+
+.prev, .next {
+    @extend .button;
+    position: absolute;
+    top: 0;
+    border-radius: 1px;
+    font-weight: 600;
+    font-size: 18px;
+    height: $headerHeight; // equivalent to the height of the .guide-header
+    z-index: $zIndexMax;
+    // border: 1px solid red;
+
+    &:hover, &:active {
+        font-weight: 900;
+    }
+}
+
+.prev { 
+    left: 0;
+    padding: 5px 20px 5px 10px;
+}
+
+.next { 
+    right: 0;
+    padding: 5px 10px 5px 20px;
+}
+
+.slide-dots {
+    @include flex-row-between-center;
+    padding: 2px;
+    // border: 1px solid blue;
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        margin: 0px 3px;
+        border-radius: 50%;
+        outline: none;
+        border: none;
+        cursor: pointer;
+        background-color: #bbb;
+        @include transition(background-color, $slideDuration, 0s);
+        
+        &:hover {
+            background-color: #717171 !important;
+        }
+    }
+}
+
+$animationDuration: .5s;
+
+.fade-out-modal-animation {
+    @include animation(fade-out-modal, $animationDuration, linear, 0s, 1, none);
+}
+
+.shrink-animation {
+    @include animation(shrink, $animationDuration, linear, 0s, 1, forwards);
+}
+
+.expand-animation {
+    @include animation(expand, $animationDuration, linear, 0s, 1, forwards);
+}
+
+@keyframes expand {
+    from {
+        opacity: 0;
+        @include transform-scale(0.8, 0.8);
+    }
+    to {
+        opacity: 1;
+        @include transform-scale(1, 1);
+    }
+}
+
+@keyframes shrink {
+    from {
+        opacity: 1;
+        @include transform-scale(1, 1);
+    }
+    to {
+        opacity: 0;
+        @include transform-scale(0, 0);
+    }
+}
+
+@-webkit-keyframes shrink {
+    from {
+        opacity: 1;
+        @include transform-scale(1, 1);
+        width: 100%;
+        height: auto;
+    }
+    to {
+        opacity: 0;
+        @include transform-scale(0, 0);
+        width: 0;
+        height: 0;
+    }
+}
+
+@keyframes fade-out-modal {
+    from { display: flex; }
+    to { display: none; }
+    // from { visibility: visible; }
+    // to { visibility: hidden; }
+}
+
+@-webkit-keyframes fade-out-modal {
+    from { display: flex; }
+    to { display: none; }
+    // from { visibility: visible; }
+    // to { visibility: hidden; }
+}
+// END OF USER'S GUIDE

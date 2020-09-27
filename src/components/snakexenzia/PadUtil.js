@@ -1,4 +1,5 @@
 import React from 'react'
+import { DIMENS_INT } from '../VALUES/dimens';
 
 import './SnakeXenzia.style.scss'
 import { KEYBOARD_KEYS } from "./Util";
@@ -85,7 +86,7 @@ const PadBoundary = (props) => {
 
 const Pad = (props) => {
     const DIMENS = {
-        padDimension: props.padDimen,
+        padDimension: props.padDimen - DIMENS_INT.scoreBoardHeight,
         lengthFactor: 0.4,
         breadthFactor: 0.2 + 0.08,
         // The space from border is just to make sure that the arrow indicators are not touching the arrows

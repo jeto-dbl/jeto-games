@@ -1,5 +1,12 @@
 import React from 'react';
-import './SnakeXenzia.style.scss';
+import { 
+    browserBreadth, 
+    browserHeight, 
+    browserWidth 
+} from '../snakexenzia/Util';
+import { DIMENS_INT } from '../VALUES/dimens';
+
+import './PlayerGuide.style.scss';
 
 
 const guides = {
@@ -70,14 +77,14 @@ const DisplayPlayerGuides = ({ activeIndex }) => {
                 className={`guide ${activeClass}`} 
                 style={currStyle}
                 key={guide.header}>
-                    <header className="guide-header">{guide.header}</header>
-                    <div className="guide-body">
-                        <ul>
-                            <GuideLists 
-                                paragraphs={guide.paragraphs}
-                            />
-                        </ul>
-                    </div>
+                    <header className="guide-header">
+                        {guide.header}
+                    </header>
+                    <ul className="guide-body">
+                        <GuideLists 
+                            paragraphs={guide.paragraphs}
+                        />
+                    </ul>
             </div>
         )
     })
@@ -97,11 +104,13 @@ const DisplayDots = ({ activeIndex, showSlides }) => {
     })
 }
 
-const PlayerGuide = (props) => {
-    const isGuideCancelled = props.isGuideCancelled
-    const cancelPlayerGuide = props.cancelPlayerGuide
-    const isGuideDeleted = props.isGuideDeleted
-    const deletePlayerGuide = props.deletePlayerGuide 
+
+export const PlayerGuide = (props) => {
+    const isGuideCancelled = props.isGuideCancelled;
+    const cancelPlayerGuide = props.cancelPlayerGuide;
+    const isGuideDeleted = props.isGuideDeleted;
+    const deletePlayerGuide = props.deletePlayerGuide;
+    const rotateX = props.rotateX;
 
     const noOfSlides = guides.mobile.length;
     // const [isGuideCancelled, setCancelGuide] = React.useState(false);
@@ -138,13 +147,24 @@ const PlayerGuide = (props) => {
     const fadeOutAnimationClass = isGuideCancelled ? "fade-out-modal-animation" : "";
 
 
+    const rotateStyle = {
+        transform: `rotateX(${rotateX}deg) translateY(-${rotateX*2}px)`,
+    };
+
+    const longerDimension = Math.max(browserWidth(), browserHeight());
+
+    const guideWidth = {
+        width: longerDimension === browserHeight() ? browserBreadth() - DIMENS_INT.fieldMargin : "480px",
+    }
+
+
     return(
         <>
             {
                 !isGuideDeleted && (
-                    <div className={`player-guide-modal ${shrinkAnimationClass}`}>
-                        <div className={`player-guide ${shrinkAnimationClass}`}>
-                            
+                    <div className={`player-guide-modal ${shrinkAnimationClass}`} style={rotateStyle}>
+                        <div className={`player-guide ${shrinkAnimationClass}`} style={guideWidth}>
+
                             <button
                                 className={`prev ${disableButton.prev && "disable-button"}`}
                                 disabled={disableButton.prev}
@@ -158,11 +178,10 @@ const PlayerGuide = (props) => {
                                     &#10095;
                             </button>
 
-                            <div className="all-guide flex-row">
-                                <DisplayPlayerGuides 
-                                    activeIndex={activeIndex}
-                                />
-                            </div>
+                            {/* Guide (contains the header and body) */}
+                            <DisplayPlayerGuides 
+                                activeIndex={activeIndex}
+                            />
 
                             <footer className="guide-footer">
                                 <button 
@@ -189,5 +208,3 @@ const PlayerGuide = (props) => {
         </>
     )
 }
-
-export default PlayerGuide;

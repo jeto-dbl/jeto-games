@@ -8,8 +8,9 @@ import './App.scss';
 
 import DisplayDevelopment from "./components/displaydev";
 import Home from './components/home';
-import SnakeXenzia from './components/snakexenzia'
-import PageNotFound from "./components/pagenotfound"
+import SnakeXenzia from './components/snakexenzia';
+import PageNotFound from "./components/pagenotfound";
+import ScrollButton from "./components/scrollbutton";
 
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
                   <PageNotFound pageTitle="Page not found!" />
                 </Route>
               </Switch>
+              <ScrollButton />
             </div>
         </HashRouter>
     );

@@ -64,6 +64,15 @@ $bloodColor: #8A0303;
     @include flex-row-between-center;
 }
 
+@mixin flex-row-between {
+    @include flex-row;
+    justify-content: space-between;
+}
+
+.flex-row-between {
+    @include flex-row-between;
+}
+
 @mixin flex-row-center-center {
     @include flex-row;
     justify-content: center;
@@ -125,6 +134,16 @@ $bloodColor: #8A0303;
     @include flex-col-between-end;
 }
 
+@mixin flex-col-between-center {
+    @include flex-col;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex-col-between-end {
+    @include flex-col-between-center;
+}
+
 @mixin flex-col-center-center {
     @include flex-col;
     justify-content: center;
@@ -154,40 +173,92 @@ $bloodColor: #8A0303;
     @include flex-col-stretch;
 }
 
-@mixin neumorphic-shadow($color1, $color2) {
-    -moz-box-shadow: -6px -6px 9px $color1, 6px 6px 9px rgba($color2, .4);
-    -ms-box-shadow: -6px -6px 9px $color1, 6px 6px 9px rgba($color2, .4);
-    -o-box-shadow: -6px -6px 9px $color1, 6px 6px 9px rgba($color2, .4);
-    -webkit-box-shadow: -6px -6px 9px $color1, 6px 6px 9px rgba($color2, .4);
-    box-shadow: -6px -6px 9px $color1, 6px 6px 9px rgba($color2, .4);
+@mixin box-shadow($h1, $v1, $b1, $s1, $color1, $alpha1, $h2, $v2, $b2, $s2, $color2, $alpha2) {
+    -moz-box-shadow: 
+        $h1 $v1 $b1 $s1 rgba($color: $color1, $alpha: $alpha1), 
+        $h2 $v2 $b2 $s1 rgba($color: $color2, $alpha: $alpha2);
+    -ms-box-shadow: 
+        $h1 $v1 $b1 $s1 rgba($color: $color1, $alpha: $alpha1), 
+        $h2 $v2 $b2 $s1 rgba($color: $color2, $alpha: $alpha2);
+    -o-box-shadow: 
+        $h1 $v1 $b1 $s1 rgba($color: $color1, $alpha: $alpha1), 
+        $h2 $v2 $b2 $s1 rgba($color: $color2, $alpha: $alpha2);
+    -webkit-box-shadow: 
+        $h1 $v1 $b1 $s1 rgba($color: $color1, $alpha: $alpha1), 
+        $h2 $v2 $b2 $s1 rgba($color: $color2, $alpha: $alpha2);
+    box-shadow: 
+        $h1 $v1 $b1 $s1 rgba($color: $color1, $alpha: $alpha1), 
+        $h2 $v2 $b2 $s1 rgba($color: $color2, $alpha: $alpha2);
     -webkit-appearance: none;
+}
+
+@mixin neumorphic-shadow($color1, $color2) {
+    @include box-shadow(-6px, -6px, 9px, 0, $color1, 0.0, 6px, 6px, 9px, 0, $color2, 0.4);
 }
 
 @mixin neumorphic-shadow-hover($color1, $color2) {
-    -moz-box-shadow: -2px -2px 4px $color1, 2px 2px 4px rgba($color2, .4);
-    -ms-box-shadow: -2px -2px 4px $color1, 2px 2px 4px rgba($color2, .4);
-    -o-box-shadow: -2px -2px 4px $color1, 2px 2px 4px rgba($color2, .4);
-    -webkit-box-shadow: -2px -2px 4px $color1, 2px 2px 4px rgba($color2, .4);
-    box-shadow: -2px -2px 4px $color1, 2px 2px 4px rgba($color2, .4);
-    -webkit-appearance: none;
+    @include box-shadow(-2px, -2px, 4px, 0, $color1, 0.0, 2px, 2px, 4px, 0, $color2, 0.4);
 }
 
 @mixin neumorphic-shadow-active($color1, $color2) {
-    -moz-box-shadow: inset -3px -3px 6px $color1, inset 3px 3px 6px rgba($color2, .4);
-    -ms-box-shadow: inset -3px -3px 6px $color1, inset 3px 3px 6px rgba($color2, .4);
-    -o-box-shadow: inset -3px -3px 6px $color1, inset 3px 3px 6px rgba($color2, .4);
-    -webkit-box-shadow: inset -3px -3px 6px $color1, inset 3px 3px 6px rgba($color2, .4);
-    box-shadow: inset -3px -3px 6px $color1, inset 3px 3px 6px rgba($color2, .4);
-    -webkit-appearance: none;
+    @include box-shadow(-3px, -3px, 6px, 0, $color1, 0.0, inset, 3px, 3px, 6px, $color2, 0.4);
 }
 
 @mixin neumorphic-shadow-inset($color1, $color2) {
-    -moz-box-shadow: inset -6px -6px 9px $color1, inset 6px 6px 9px rgba($color2, .4);
-    -ms-box-shadow: inset -6px -6px 9px $color1, inset 6px 6px 9px rgba($color2, .4);
-    -o-box-shadow: inset -6px -6px 9px $color1, inset 6px 6px 9px rgba($color2, .4);
-    -webkit-box-shadow: inset -6px -6px 9px $color1, inset 6px 6px 9px rgba($color2, .4);
-    box-shadow: inset -6px -6px 9px $color1, inset 6px 6px 9px rgba($color2, .4);
+    @include box-shadow(inset, -6px, -6px, 9px, $color1, 0.0, inset, 6px, 6px, 9px, $color2, 0.4);
+}
+
+@mixin scroll-shadow {
+    @include box-shadow(2px, 2px, 4px, 0, #000, 0.4, 0, 0, 0, 0, #000, 0.0);
+}
+
+@mixin scroll-shadow-hover {
+    @include box-shadow(4px, 4px, 6px, 0, #000, 0.4, 0, 0, 0, 0, #000, 0.0);
+}
+
+.shadow-xs	{
+    @include box-shadow(0, 0, 0, 1px, #000, 0.05, 0, 0, 0, 0, #000, 0.0);
+}
+
+.shadow-sm	{
+    @include box-shadow(0, 1px, 2px, 0, #000, 0.05, 0, 0, 0, 0, #000, 0.0);
+}
+
+.shadow	{
+    @include box-shadow(0, 1px, 3px, 0, #000, 0.1, 0, 1px, 2px, 0, #000, 0.06);
+}
+
+.shadow-md	{
+    @include box-shadow(0, 4px, 6px, -1px, #000, 0.1, 0, 2px, 4px, -1px, #000, 0.06);
+}
+
+.shadow-lg	{
+    @include box-shadow(0, 10px, 15px, -3px, #000, 0.1, 0, 4px, 6px, -2px, #000, 0.05);
+}
+
+.shadow-xl	{
+    @include box-shadow(0, 20px, 25px, -5px, #000, 0.1, 0, 10px, 10px, -5px, #000, 0.04);
+}
+
+.shadow-2xl	{
+    @include box-shadow(0, 25px, 50px, -12px, #000, 0.25, 0, 0, 0, 0, #000, 0.0);
+}
+
+.shadow-inner	{
+    @include box-shadow(0, 2px, 4px, 0, #000, 0.06, 0, 0, 0, 0, #000, 0.0);
+}
+
+.shadow-outline	{
+    @include box-shadow(0px, 0px, 0px, 3px, #4299E1, 0.5, 0, 0, 0, 0, #000, 0.0);
+}
+
+.shadow-none	{
+    box-shadow: none;
     -webkit-appearance: none;
+}
+
+.shadow {
+    @include box-shadow(0, 4px, 8px, 0, #000, 0.3, 0, 0, 0, 0, #000, 0.0);
 }
 
 @mixin transition-all-easeInOut($duration) {
@@ -290,67 +361,4 @@ $bloodColor: #8A0303;
     -o-transform-style: preserve-3d;
     -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
-}
-
-@mixin box-shadow($h1, $v1, $b1, $s1, $op1, $h2, $v2, $b2, $s2, $op2) {
-    -moz-box-shadow: $h1 $v1 $b1 $s1 rgba(0, 0, 0, $op1), $h2 $v2 $b2 $s1 rgba(0, 0, 0, $op2);
-    -ms-box-shadow: $h1 $v1 $b1 $s1 rgba(0, 0, 0, $op1), $h2 $v2 $b2 $s1 rgba(0, 0, 0, $op2);
-    -o-box-shadow: $h1 $v1 $b1 $s1 rgba(0, 0, 0, $op1), $h2 $v2 $b2 $s1 rgba(0, 0, 0, $op2);
-    -webkit-box-shadow: $h1 $v1 $b1 $s1 rgba(0, 0, 0, $op1), $h2 $v2 $b2 $s1 rgba(0, 0, 0, $op2);
-    box-shadow: $h1 $v1 $b1 $s1 rgba(0, 0, 0, $op1), $h2 $v2 $b2 $s1 rgba(0, 0, 0, $op2);
-    -webkit-appearance: none;
-}
-
-@mixin scroll-shadow {
-    @include box-shadow(2px, 2px, 4px, 0, 0.4, 0, 0, 0, 0, 0);
-}
-
-@mixin scroll-shadow-hover {
-    @include box-shadow(4px, 4px, 6px, 0, 0.4, 0, 0, 0, 0, 0);
-}
-
-.shadow-xs	{
-    @include box-shadow(0, 0, 0, 1px, 0.05, 0, 0, 0, 0, 0);
-}
-
-.shadow-sm	{
-    @include box-shadow(0, 1px, 2px, 0, 0.05, 0, 0, 0, 0, 0);
-}
-
-.shadow	{
-    @include box-shadow(0, 1px, 3px, 0, 0.1, 0, 1px, 2px, 0, 0.06);
-}
-
-.shadow-md	{
-    @include box-shadow(0, 4px, 6px, -1px, 0.1, 0, 2px, 4px, -1px, 0.06);
-}
-
-.shadow-lg	{
-    @include box-shadow(0, 10px, 15px, -3px, 0.1, 0, 4px, 6px, -2px, 0.05);
-}
-
-.shadow-xl	{
-    @include box-shadow(0, 20px, 25px, -5px, 0.1, 0, 10px, 10px, -5px, 0.04);
-}
-
-.shadow-2xl	{
-    @include box-shadow(0, 25px, 50px, -12px, 0.25, 0, 0, 0, 0, 0);
-}
-
-.shadow-inner	{
-    @include box-shadow(0, 2px, 4px, 0, 0.06, 0, 0, 0, 0, 0);
-}
-
-.shadow-outline	{
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
-    -webkit-appearance: none;
-}
-
-.shadow-none	{
-    box-shadow: none;
-    -webkit-appearance: none;
-}
-
-.shadow {
-    @include box-shadow(0, 4px, 8px, 0, 0.3, 0, 0, 0, 0, 0);
 }

@@ -3,12 +3,12 @@ import { instanceOf } from "prop-types";
 import { withCookies, Cookies } from "react-cookie";
 
 import './SnakeXenzia.style.scss';
+// eslint-disable-next-line
+import PlayerGuide  from '../player-guide';
 import FieldBoundary from './FieldBoundary';
+import { NAME } from '../VALUES/strings';
 import { Sound } from './Sound';
-import {
-    Pad,
-    ChangePadColor,
-} from './PadUtil';
+import { Pad, ChangePadColor } from './PadUtil';
 import { 
     BOX_SIZE, 
     KEYBOARD_KEYS, 
@@ -38,7 +38,7 @@ import {
     time,
     Queue,
 } from './Util';
-import { NAME } from '../VALUES/strings';
+
 
 let START_DIRECTION = KEYBOARD_KEYS.RIGHT;
 const SOUND = new Sound();
@@ -748,19 +748,6 @@ export class Field extends React.Component {
         }
     }
 
-    getPadDim() {
-        return Math.floor(
-            Math.min(
-                Math.abs(browserLength() - browserBreadth()) - 60, 
-                PAD_PORTION * browserLength()
-            )
-        );
-    }
-
-    updatePadDimension() {
-        this.setState({ padDimen: this.getPadDim() });
-    }
-
     startGame() {
         // console.log("Start Game...")
 
@@ -878,6 +865,19 @@ export class Field extends React.Component {
         // }
     }
 
+    getPadDim() {
+        return Math.floor(
+            Math.min(
+                Math.abs(browserLength() - browserBreadth()) - 70, 
+                PAD_PORTION * browserLength()
+            )
+        );
+    }
+
+    updatePadDimension() {
+        this.setState({ padDimen: this.getPadDim() });
+    }
+
     componentDidMount() {
         window.addEventListener('keydown', this.updateMoveDirection);
 
@@ -897,6 +897,7 @@ export class Field extends React.Component {
         window.addEventListener("mousemove", this.dragField);
 
         window.addEventListener("orientationchange", this.updatePadDimension);
+        window.addEventListener("resize", this.updatePadDimension);
     }
     
     componentWillUnmount() {
@@ -907,19 +908,21 @@ export class Field extends React.Component {
         window.removeEventListener("mouseup", this.setDraggableFalse);
         window.removeEventListener("mousemove", this.dragField);
         window.removeEventListener("orientationchange", this.updatePadDimension);
+        window.removeEventListener("resize", this.updatePadDimension);
     }
 
     highscoreBoard() {
         const opacity = this.state.gameOver || this.state.paused ? "1" : ".4";
         return (
             <div className="highscore-board" style={{ opacity: opacity }}>
-                <div className="score-label">H-Score: </div>
-                <div className="score" style={{borderRadius: "0px 0px 4px 4px"}}>
+                <div className="highscore-label">H-Score: </div>
+                <div className="highscore">
                     {this.state.highscore}
                 </div>
             </div>
         )
     }
+
 
     render() {
         // Remove the default image.
@@ -955,10 +958,6 @@ export class Field extends React.Component {
                     resetGame={this.resetGame}
                     score={this.state.score}
                     rotateX={this.state.rotateX}
-                    isGuideCancelled={this.state.isGuideCancelled}
-                    cancelPlayerGuide={this.cancelPlayerGuide}
-                    isGuideDeleted={this.state.isGuideDeleted}
-                    deletePlayerGuide={this.deletePlayerGuide}
                 />
                 
                 {/* 
@@ -967,7 +966,7 @@ export class Field extends React.Component {
                        border-bottom and border-top for pad-up and pad-down color
                 */}
                 {
-                    isMobile && (
+                    isMobile() && (
                         <>
                             <Pad 
                                 onPadDirChange={this.onPadDirChange}
@@ -982,6 +981,14 @@ export class Field extends React.Component {
                         </>
                     )
                 }
+
+                {/* <PlayerGuide
+                    isGuideCancelled={this.state.isGuideCancelled}
+                    cancelPlayerGuide={this.cancelPlayerGuide}
+                    isGuideDeleted={this.state.isGuideDeleted}
+                    deletePlayerGuide={this.deletePlayerGuide}
+                    rotateX={this.state.rotateX}
+                /> */}
             </div>
         )
     }

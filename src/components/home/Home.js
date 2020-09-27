@@ -2,8 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import "./Home.style.scss";
-import Contact from '../contact';
 import { NAME } from "../VALUES/strings";
+import Contact from '../contact';
 
 
 const allGames = [
@@ -37,7 +37,6 @@ const backgroundImagesUrls = [
     require("../../assets/images/home/Black_And_Red.jpg"),
     require("../../assets/images/home/red_and_black_abstract.jpg"),
     require("../../assets/images/home/evil_house.jpg"),
-    require("../../assets/images/home/jugra.jpg"),
 ]
 
 

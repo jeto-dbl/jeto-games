@@ -1,16 +1,17 @@
 import React from 'react';
 
-import './SnakeXenzia.style.scss'
-import { 
-    browserBreadth, 
-    browserLength, 
-    isMobile,
-    FIELD_PORTION,
-} from "./Util";
+import './SnakeXenzia.style.scss';
 import Snake from './Snake';
 import Food from './Food';
-// eslint-disable-next-line
-import PlayerGuide from './PlayerGuide';
+import { DIMENS_INT } from "../VALUES/dimens";
+import { 
+    isMobile,
+    browserHeight,
+    browserWidth,
+    browserBreadth, 
+    browserLength, 
+    FIELD_PORTION,
+} from "./Util";
 
 
 const CountdownBoard = (props) => {
@@ -97,8 +98,22 @@ const BonusLifeBar = (props) => {
 }
 
 const ScoreBoard = (props) => {
+    // margin between the score board and the Field
+    const margin = 4;
+    // if after adding the scoreBoardWidth to the browserHeight(),
+    // and the browserWidth() is the longer dimension the place the scoreBoardWidth
+    // at the bottom-right of the field, else place it at the bottom center
+    const longerDimension = Math.max(browserWidth(), browserHeight() + DIMENS_INT.scoreBoardWidth + margin);
+
+    const scoreBoardStyle = {
+        bottom: longerDimension === browserWidth() ? "0px" : "-28px",
+        right: longerDimension === browserWidth() ? `${-DIMENS_INT.scoreBoardWidth - margin}px` : "50%",
+        margin: longerDimension === browserWidth() ? "0" : `0px ${-DIMENS_INT.scoreBoardWidth / 2.0}px 0px 0px`,
+        minWidth: `${DIMENS_INT.scoreBoardWidth}px`,
+    }
+
     return (
-        <div className="score-board">
+        <div className="score-board" style={scoreBoardStyle}>
             <div className="score-label">Score: </div>
             <div className="score">
                 {props.score}
@@ -123,20 +138,12 @@ const FieldBoundary = (props) => {
     const vibrate = props.vibrate;
     const score = props.score;
     const vibrateClass = vibrate ? "vibrate" : "";
-    const rotateX = isMobile ? 0 : props.rotateX; // Only apply for Desktops
+    const rotateX = isMobile() ? 0 : props.rotateX; // Only apply for Desktops
     const resumeGame = props.resumeGame;
     const togglePlayPause = props.togglePlayPause;
     const resetGame = props.resetGame;
-    // eslint-disable-next-line
-    const isGuideCancelled = props.isGuideCancelled
-    // eslint-disable-next-line
-    const cancelPlayerGuide = props.cancelPlayerGuide
-    // eslint-disable-next-line
-    const isGuideDeleted = props.isGuideDeleted
-    // eslint-disable-next-line
-    const deletePlayerGuide = props.deletePlayerGuide 
 
-    const FIELD_MARGIN = 10;  // space between the field of play and the browser's edge
+    const FIELD_MARGIN = DIMENS_INT.fieldMargin;  // space between the field of play and the browser's edge
     const FIELD_WIDTH = Math.min(browserBreadth(), FIELD_PORTION * browserLength()) - FIELD_MARGIN;
 
     const style = {
@@ -211,12 +218,6 @@ const FieldBoundary = (props) => {
                     )
                 })
             }
-            {/* <PlayerGuide
-                isGuideCancelled={isGuideCancelled}
-                cancelPlayerGuide={cancelPlayerGuide}
-                isGuideDeleted={isGuideDeleted}
-                deletePlayerGuide={deletePlayerGuide}
-            /> */}
         </div>
     )
 }

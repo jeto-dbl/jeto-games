@@ -1,3 +1,6 @@
+@import '../VALUES/dimens.scss';
+@import '../VALUES/colors.scss';
+
 .error-page {
     margin: 20px 10px;
     border-radius: 8px;
@@ -5,14 +8,14 @@
 
 .error {
     padding: 32px 64px;
-    background-color: #6CB33D!important;
+    background-color: $siteColor2 !important;
     text-align: left;
     border-radius: 8px 8px 0 0;
 }
 
 .error h1 {
     font-size: 20px;
-    color: white!important;
+    color: white !important;
     font-weight: 400;
     margin: 10px 0px;
 }
@@ -22,7 +25,7 @@
 }
 
 .error-list ul {
-    margin: 0px;
+    border-radius: inherit;
     padding: 10px;
     text-align: left;
     text-decoration: none;
@@ -40,7 +43,7 @@
     text-decoration-style: solid;
 }
 
-@media only screen and (min-width: 600px) {
+@media only screen and (min-width: $smallMobileWidth) {
     .error h1 {
         font-size: 28px;
         color: white!important;
@@ -49,7 +52,7 @@
     }
 }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: $mobileWidth) {
     .error h1 {
         font-size: 36px;
         color: white!important;

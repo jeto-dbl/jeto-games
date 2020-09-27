@@ -10,6 +10,8 @@ const DIMENS = {
     barrierHeight: `60px`, 
     dashboardWidth: "250px",
     scrollButtonDim: '48px',
+    scoreBoardWidth: "150px",
+    scoreBoardHeight: "30px",
 }
 
 const DIMENS_INT = { // Unit in pixels
@@ -20,6 +22,9 @@ const DIMENS_INT = { // Unit in pixels
     barrierHeight: 60, // same as barrierHeight in DIMENS object
     dashboardWidth: 250,
     scrollButtonDim: 48,
+    fieldMargin: 30,
+    scoreBoardWidth: 150,
+    scoreBoardHeight: 30, // approx from css style
 
     zIndexNeg10: -10,
     zIndexNeg20: -20,

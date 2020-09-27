@@ -1,3 +1,6 @@
+@import '../VALUES/styles.scss';
+
+
 .update-text {
   position: absolute;
   text-align: center;
@@ -9,10 +12,7 @@
 }
 
 .loader-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  @include flex-row-center-center;
   height: 100vh; /* means view height: 90vh = 90% of the viewport height.*/
 }
 
