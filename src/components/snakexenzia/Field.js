@@ -10,12 +10,12 @@ import { NAME } from '../VALUES/strings';
 import { Sound } from './Sound';
 import { Pad, ChangePadColor } from './PadUtil';
 import { 
+    DEFAULTS,
     BOX_SIZE, 
     KEYBOARD_KEYS, 
     SNAKE_COLORS,
     PAD_COLORS,
     VIBRATE_MILLISECONDS,
-    DEFAULT_COUNTDOWN,
     FIELD_IMAGES,
     NORMAL_FOOD_POINT,
     BONUS_FOOD_POINT,
@@ -38,6 +38,7 @@ import {
     time,
     Queue,
 } from './Util';
+import { COLORS } from '../VALUES/colors';
 
 
 let START_DIRECTION = KEYBOARD_KEYS.RIGHT;
@@ -98,39 +99,53 @@ const isSnakeDead = (snakeHead, snake) => {
     return false;
 }
 
-const getNewSnakeHead = (direction, snakeHead) => {
+const getNewSnakeHead = (direction, snakeHead, allowSnakeThroughWalls) => {
+
+    let [newX, newY] = snakeHead;
     switch (direction) {
         case KEYBOARD_KEYS.RIGHT:
             // Increase X; Y remains constant.
-            snakeHead = [snakeHead[0] + BOX_SIZE, snakeHead[1]];
+            [newX, newY] = [snakeHead[0] + BOX_SIZE, snakeHead[1]];
             break;
         case KEYBOARD_KEYS.DOWN:
             // X remains constant; Increse Y.
-            snakeHead = [snakeHead[0], snakeHead[1] + BOX_SIZE];
+            [newX, newY] = [snakeHead[0], snakeHead[1] + BOX_SIZE];
             break;
         case KEYBOARD_KEYS.LEFT:
             // Reduce X; Y remains constant.
-            snakeHead = [snakeHead[0] - BOX_SIZE, snakeHead[1]];
+            [newX, newY] = [snakeHead[0] - BOX_SIZE, snakeHead[1]];
             break;
         case KEYBOARD_KEYS.UP:
             // X remains constant; Reduce Y.
-            snakeHead = [snakeHead[0], snakeHead[1] - BOX_SIZE];
+            [newX, newY] = [snakeHead[0], snakeHead[1] - BOX_SIZE];
             break;
         default:
             break;
     }
-    return snakeHead;
+
+    if(allowSnakeThroughWalls) {
+        // Allows snake to pass through walls.
+        // You can comment this conditions if you don't want the effect
+        if(newX < 0 || newX >= 100) { // if newX is not within boundary
+            newX = newX < 0 ? 100 + newX : newX - 100
+        }
+        if(newY < 0 || newY >= 100) { // if newY is not within boundary
+            newY = newY < 0 ? 100 + newY : newY - 100
+        }
+    }
+
+    return [newX, newY];
 }
 
-const generateRandomSnakePos = () => {
+const generateRandomSnakePos = (allowSnakeThroughWalls) => {
     /* Generate the starting three (3) snake boxes at random on the field */
     const snake = [];
     // First generate the tail
     snake.push(generateRandomCoord());
 
-    // Now generate the other two (2) boxes relative to the tail.
-    let snakeHead = snake[snake.length-1];
+    /* Now generate the other two (2) boxes relative to the tail.*/
 
+    let snakeHead = snake[snake.length-1];
     // Assign all possible KEYBOARD_KEYS to choose from
     const possibleDir = [
         KEYBOARD_KEYS.UP, KEYBOARD_KEYS.RIGHT, 
@@ -144,13 +159,13 @@ const generateRandomSnakePos = () => {
     const SNAKE_LEN = 4;
     while(snake.length < SNAKE_LEN) {
         direction = possibleDir[Math.floor(Math.random() * possibleDir.length)];
-        snakeHead = getNewSnakeHead(direction, snakeHead);
+        snakeHead = getNewSnakeHead(direction, snakeHead, allowSnakeThroughWalls);
         if(!isSnakeDead(snakeHead, snake)){
             snake.push([...snakeHead]);
         }
         snakeHead = snake[snake.length - 1];
     }
-    // Remove the head that depicts the relative direction
+    // Remove the head that depicted the relative direction
     snake.pop();
 
     // Set the direction the snake would start with.
@@ -181,10 +196,14 @@ export class Field extends React.Component {
     constructor(props){
         super(props);
 
+    // if(newY < 0) {
+    //     newY = 100 + newY;
+    // } else if (newY >= 100) {
+    //     newY = newY - 100;
+    // }
         this.startingState = {
             level: 1,
-            countdown: DEFAULT_COUNTDOWN,
-            snake: generateRandomSnakePos(),
+            countdown: DEFAULTS.countdown,
             snakeColor: getSnakeColor(),
             direction: START_DIRECTION,
             eat: false,
@@ -198,15 +217,22 @@ export class Field extends React.Component {
             padColorPos: 0,
             fullscreenMode: screenMode.EXPAND,
             draggable: false,
-            turnedThisFrame: true,
+            turnedThisFrame: false,
             padDimen: this.getPadDim(),
-            // Highscore default is 0
+            // Default for allowSnakeThroughWalls is false
+            allowSnakeThroughWalls: getCookie({
+                cookies: this.props.cookies, 
+                gameType: NAME.snakeXenzia, 
+                gameKey: COOKIES_KEYS.allowSnakeThroughWalls,
+                doNotParse: false
+            }) || DEFAULTS.allowSnakeThroughWalls,
+            // Default Highscore is 0
             highscore: getCookie({
                 cookies: this.props.cookies, 
                 gameType: NAME.snakeXenzia, 
                 gameKey: COOKIES_KEYS.highscore,
                 doNotParse: false
-            }) || 0,
+            }) || DEFAULTS.highscore,
             // Rotate screen by a default of 25 degrees when you have included the PlayerGuide 
             // For now, use a default rotation of 0deg
             rotateX: getCookie({
@@ -214,15 +240,31 @@ export class Field extends React.Component {
                 gameType: NAME.snakeXenzia, 
                 gameKey: COOKIES_KEYS.rotateX,
                 doNotParse: false
-            }) || 0,
-            isGuideCancelled: false,
+            }) || DEFAULTS.rotateX,
+            isGuideCancelled: DEFAULTS.cancelGuide,
             isGuideDeleted: getCookie({
                 cookies: this.props.cookies, 
                 gameType: NAME.snakeXenzia, 
                 gameKey: COOKIES_KEYS.isGuideDeleted,
                 doNotParse: false
-            }) || false,
+            }) || DEFAULTS.isGuideDeleted,
         }
+
+        // console.log({
+        //     allowSnakeThroughWalls: getCookie({
+        //         cookies: this.props.cookies, 
+        //         gameType: NAME.snakeXenzia, 
+        //         gameKey: COOKIES_KEYS.allowSnakeThroughWalls,
+        //         doNotParse: false
+        //     })
+        // })
+
+        // Suggested icons to pass through walls
+        // fas fa-recycle
+
+        // generate a random starting snake position
+        this.startingState.snake = generateRandomSnakePos(false)
+        // this.startingState.snake = [[4, 0], [8, 0], [12, 0]]
         
         // Add food to state
         const food = generateFoodCoordinate(this.startingState.snake);
@@ -275,7 +317,7 @@ export class Field extends React.Component {
         this.increaseSnakeSpeedBy = this.increaseSnakeSpeedBy.bind(this);
         this.showFood = this.showFood.bind(this);
         this.checkForBonus = this.checkForBonus.bind(this);
-        this.vibrateSnake = this.vibrateSnake.bind(this);
+        this.stopGame = this.stopGame.bind(this);
         this.resetState = this.resetState.bind(this);
         this.resetGame =this.resetGame.bind(this);
         this.pauseGame = this.pauseGame.bind(this);
@@ -288,8 +330,26 @@ export class Field extends React.Component {
         this.setDraggableTrue = this.setDraggableTrue.bind(this);
         this.dragField = this.dragField.bind(this);
         this.updatePadDimension = this.updatePadDimension.bind(this);
+        this.togglePassThroughWall = this.togglePassThroughWall.bind(this);
         this.cancelPlayerGuide = this.cancelPlayerGuide.bind(this);
         this.deletePlayerGuide = this.deletePlayerGuide.bind(this);
+    }
+
+    togglePassThroughWall() {
+        setCookie({
+            cookies: this.props.cookies,
+            gameType: NAME.snakeXenzia,
+            gameKey: COOKIES_KEYS.allowSnakeThroughWalls,
+            gameValue: !this.state.allowSnakeThroughWalls,
+        });
+
+        this.setState({ allowSnakeThroughWalls: !this.state.allowSnakeThroughWalls });
+        setCookie({
+            cookies: this.props.cookies,
+            gameType: NAME.snakeXenzia,
+            gameKey: COOKIES_KEYS.state,
+            gameValue: this.state,
+        });
     }
 
     cancelPlayerGuide(cancel) {
@@ -367,6 +427,9 @@ export class Field extends React.Component {
 
     resetState() {
         this.setState(this.defaultState);
+        this.setState({ snake: generateRandomSnakePos(false) })
+        // generateRandomSnakePos() would have updated the START_DIRECTION hence update the direction
+        this.setState({ direction: START_DIRECTION }) 
         this.setState({ speed: GAME_START_SPEED });
         this.setState({ food: generateFoodCoordinate(this.state.snake) });
         this.setState({ snakeColor: getSnakeColor() });
@@ -376,14 +439,21 @@ export class Field extends React.Component {
             gameType: NAME.snakeXenzia, 
             gameKey: COOKIES_KEYS.highscore,
             doNotParse: false
-        }) || 0 });
+        }) || DEFAULTS.highscore });
 
         this.setState({ rotateX: getCookie({
             cookies: this.props.cookies, 
             gameType: NAME.snakeXenzia, 
             gameKey: COOKIES_KEYS.rotateX,
             doNotParse: false
-        }) || 0 });
+        }) || DEFAULTS.rotateX });
+
+        this.setState({ allowSnakeThroughWalls: getCookie({
+            cookies: this.props.cookies, 
+            gameType: NAME.snakeXenzia, 
+            gameKey: COOKIES_KEYS.allowSnakeThroughWalls,
+            doNotParse: false
+        }) || DEFAULTS.allowSnakeThroughWalls });
 
         setCookie({
             cookies: this.props.cookies,
@@ -391,12 +461,6 @@ export class Field extends React.Component {
             gameKey: COOKIES_KEYS.state,
             gameValue: this.state,
         });
-    }
-
-    vibrateSnake() {
-        this.setState({ vibrate: true });
-        // The VIBRATE_MILLISECONDS is the same as the vibrate class in the CSS file
-        window.navigator.vibrate(VIBRATE_MILLISECONDS);
     }
 
     increaseSnakeSpeedBy(millSpeed) {
@@ -470,6 +534,11 @@ export class Field extends React.Component {
         // You can also pause or play the game using the space-bar key.
         if(direction === KEYBOARD_KEYS.PLAY_PAUSE) {
             this.togglePlayPause();
+            // iff the game is over then the space-bar key can also acts
+            // as the replay key.
+            if(this.state.gameOver) {
+                this.resetGame();
+            }
         }
 
         // Also, only update direction if game begins,
@@ -509,7 +578,7 @@ export class Field extends React.Component {
         this.resetFoodForSpeed();
 
         // reset countdown
-        this.setState({ countdown: DEFAULT_COUNTDOWN });
+        this.setState({ countdown: DEFAULTS.countdown });
 
         this.beginGame();
     }
@@ -519,10 +588,11 @@ export class Field extends React.Component {
     }
 
     moveSnake() {
+        SOUND.playSnakeHiss();
         this.setEat(false);
+
         let newSnake = [...this.state.snake];
         let snakeHead = newSnake[newSnake.length - 1];
-        SOUND.playSnakeHiss();
 
         // As the snake moves, always check if it has eaten food
         // So that we can add it to the body part of the snake
@@ -536,10 +606,20 @@ export class Field extends React.Component {
         // Store the coordinate of the new head depending on the direction
         // and also the coordinate of an additional new head depending if
         // food has been eaten.
-        snakeHead = getNewSnakeHead(this.state.direction, snakeHead);
+        snakeHead = getNewSnakeHead(this.state.direction, snakeHead, this.state.allowSnakeThroughWalls);
 
         // Before you move the snake, also check if the head is within coordinate
+        // and snake has not eaten itself
         const isDead = isSnakeDead(snakeHead, this.state.snake);
+
+        // console.log({
+        //     MOVESNAKE: "From MOVE SNAKE!",
+        //     snakeHead: snakeHead,
+        //     isDead: isDead,
+        //     snake: this.state.snake,
+        //     direction: this.state.direction,
+        // })
+
         if (!isDead){
             // Add the new head
             newSnake.push(snakeHead);
@@ -555,7 +635,7 @@ export class Field extends React.Component {
         } 
 
         // This simulate the new snake movement since all the position of
-        // the snake body (box) has been updated.
+        // the snake body (boxes) has been updated.
         this.setState({ snake: newSnake });
 
         // 1. Increase the score since snake has eaten
@@ -575,12 +655,16 @@ export class Field extends React.Component {
             
             // console.log(`${this.state.foodForSpeed} speed food remaining!!!`);
         }
+
+        // Update the state of the current game peradventure the user leaves the browser
+        // so they can continue from where they stopped.
         setCookie({
             cookies: this.props.cookies,
             gameType: NAME.snakeXenzia,
             gameKey: COOKIES_KEYS.state,
             gameValue: this.state,
         });
+
         return isDead;
     }
 
@@ -748,6 +832,15 @@ export class Field extends React.Component {
         }
     }
 
+    stopGame() {
+        SOUND.pauseSnakeHiss();
+        this.setState({ gameOver: true });
+        this.setState({ vibrate: true });
+        SOUND.playGameOver();
+        // The VIBRATE_MILLISECONDS is the same as the vibrate class in the dimens.scss file
+        window.navigator.vibrate(VIBRATE_MILLISECONDS);
+    }
+
     startGame() {
         // console.log("Start Game...")
 
@@ -766,11 +859,8 @@ export class Field extends React.Component {
                 // set an update that we haven't turned in a direction
                 this.setState({ turnedThisFrame: false });
                 if(gameOver){
-                    SOUND.pauseSnakeHiss();
-                    SOUND.playGameOver();
+                    this.stopGame();
                     clearInterval(currInterval);
-                    this.setState({ gameOver: true });
-                    this.vibrateSnake();
                     return false;
                 }
 
@@ -879,6 +969,7 @@ export class Field extends React.Component {
     }
 
     componentDidMount() {
+        // this.resetState();
         window.addEventListener('keydown', this.updateMoveDirection);
 
         // Start by showing the guide,
@@ -927,6 +1018,11 @@ export class Field extends React.Component {
     render() {
         // Remove the default image.
         document.body.style.backgroundImage = "url('')";
+
+        const passThroughWallStyle = {
+            color: this.state.allowSnakeThroughWalls ? COLORS.peaceColor : COLORS.bloodColor,
+        }
+
         return(
             <div id="game-boundary">
                 <div className="fullscreen-highscore">
@@ -981,6 +1077,15 @@ export class Field extends React.Component {
                         </>
                     )
                 }
+
+                <button 
+                    onClick={this.togglePassThroughWall}
+                    className="pass-through-wall">
+                    <i 
+                        style={passThroughWallStyle}
+                        className="fas fa-recycle"
+                        ></i>
+                </button>
 
                 {/* <PlayerGuide
                     isGuideCancelled={this.state.isGuideCancelled}

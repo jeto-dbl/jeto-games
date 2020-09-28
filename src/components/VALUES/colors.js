@@ -17,6 +17,8 @@ const COLORS = {
     colorInvert2: "#010b13",
     white: "#fff",
     whiteDim: "rgba($white, 0.65)",
+    bloodColor: "#8A0303",
+    peaceColor: "#072F5F",
 }
 
 const BRAND_COLORS = {

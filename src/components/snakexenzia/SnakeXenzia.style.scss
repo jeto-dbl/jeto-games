@@ -195,35 +195,35 @@ $BOX_SIZE_INC: 4.05%;
 }
 
 .eat-animate {
-    border: 4px dotted #8A0303;
+    border: 4px dotted $bloodColor;
     @include animation(eatAnimation, 0.05s, linear, 0s, infinite, none);
 }
 
 @keyframes eatAnimation {
     0% {
-        border: 4px dotted #8A0303;
+        border: 4px dotted $bloodColor;
     }
 
     50% {
-        border: 0px dotted #8A0303;
+        border: 0px dotted $bloodColor;
     }
 
     100% {
-        border: 4px dotted #8A0303;
+        border: 4px dotted $bloodColor;
     }
 }
 
 @-webkit-keyframes eatAnimation {
     0% {
-        border: 4px dotted #8A0303;
+        border: 4px dotted $bloodColor;
     }
 
     50% {
-        border: 0px dotted #8A0303;
+        border: 0px dotted $bloodColor;
     }
 
     100% {
-        border: 4px dotted #8A0303;
+        border: 4px dotted $bloodColor;
     }
 }
 // END => Snake Box Style
@@ -390,6 +390,15 @@ $foodDim: 15px;
 //     right: $fieldMargin;
 //     // border: 1px solid red;
 // }
+
+button.pass-through-wall {
+    // background-color: transparent;
+    padding: 0px 10px;
+    font-size: 20px;
+    position: absolute;
+    bottom: $fieldMargin;
+    right: calc(#{$fieldMargin} + 50px + 10px);
+}
 
 .pad-color-change {
     @include flex-col-between-center;
@@ -735,7 +744,7 @@ $arrowIndicatorColor: #f1f1f11f;
 .progress-bar {
     width: 100%;
     border-radius: 8px 0px 0px 8px;
-    background-color: #8A0303;
+    background-color: $bloodColor;
 }
 
 .countdown {

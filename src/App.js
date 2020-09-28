@@ -29,19 +29,19 @@ function App() {
               <Switch>
                 {/* <RouteList /> */}
                 <Route exact path="/">
-                  <Home pageTitle="Welcome to the Game Village | JetO" />
+                  <Home pageTitle="Welcome to JetO Game Village" />
                 </Route>
                 <Route exact path="/home">
-                  <Home pageTitle="Welcome to the Game Village | JetO" />
+                  <Home pageTitle="Welcome to JetO Game Village" />
                 </Route>
                 <Route exact path="/jeto-games">
-                  <Home pageTitle="Welcome to the Game Village | JetO" />
+                  <Home pageTitle="Welcome to JetO Game Village" />
                 </Route>
                 <Route exact path="/snake-xenzia">
                     <SnakeXenzia pageTitle="Snake Xenzia | JetO"/>
                 </Route>
                 <Route key="page-not-found">
-                  <PageNotFound pageTitle="Page not found!" />
+                  <PageNotFound pageTitle="Page not found | JetO" />
                 </Route>
               </Switch>
               <ScrollButton />
