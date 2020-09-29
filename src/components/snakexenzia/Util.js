@@ -86,9 +86,9 @@ const KEYBOARD_KEYS = {
     PLAY_PAUSE: 32,
 }
 
-const screenMode = {
-    EXPAND: "expand",
-    COMPRESS: "compress"
+const SCREEN_MODE = {
+    expand: "expand",
+    compress: "compress"
 }
 
 const SNAKE_COLORS = [
@@ -120,22 +120,37 @@ const gameSounds = {
     advance: require("../../assets/sounds/advance_1.mp3"),
 }
 
+const SOUND_TYPE = {
+    playSnakeHiss: "playSnakeHiss",
+    pauseSnakeHiss: "pauseSnakeHiss",
+    playEatFoodBonus: "playEatFoodBonus",
+    playEatFood: "playEatFood",
+    playGameOver: "playGameOver",
+    playAdvanceToLevel: "playAdvanceToLevel",
+}
+
 const DEFAULTS = {
-    highscore: 0,
-    rotateX: 0,
-    allowSnakeThroughWalls: false,
     countdown: 4,
-    cancelGuide: false,
+    rotateX: 0,
+    highscore: 0,
+    allowSnakeThroughWalls: false,
+    muteSounds: false,
+    muteVibrations: false,
+    isGuideCancelled: false,
     isGuideDeleted: false,
+    startDirection: KEYBOARD_KEYS.RIGHT,
+    vibrateMilliseconds: 500,
 }
 
 const COOKIES_KEYS = {
-    highscore: "JetOhighscore",
-    state: "JetOstate",
-    rotateX: "JetOrotateX",
-    allowSnakeThroughWalls: "JetOallowSnakeThroughWalls",
-    cancelGuide: "JetOcancelGuide",
-    isGuideDeleted: "JetOdeleteGuide",
+    highscore: "highscore",
+    state: "state",
+    rotateX: "rotateX",
+    allowSnakeThroughWalls: "allowSnakeThroughWalls",
+    muteSounds: "muteSounds",
+    muteVibrations: "muteVibrations",
+    isGuideCancelled: "isGuideCancelled",
+    isGuideDeleted: "isGuideDeleted",
     owner: "JetOGames"
 }
 
@@ -145,14 +160,14 @@ const COOKIES_STRUCTURE = {
         [NAME.snakeXenzia]: {
             highscore: COOKIES_KEYS.highscore,
             rotateX: COOKIES_KEYS.rotateX,
-            cancelGuide: COOKIES_KEYS.cancelGuide,
+            isGuideCancelled: COOKIES_KEYS.isGuideCancelled,
             isGuideDeleted: COOKIES_KEYS.isGuideDeleted,
             state: COOKIES_KEYS.state,
         }
     }
 }
 
-const setCookie = ({cookies, gameType, gameKey, gameValue}) => {
+const setCookie = ({ cookies, gameType, gameKey, gameValue }) => {
     const cookie_owner = COOKIES_KEYS.owner;
     // get the previous cookie if any exists
     const all_games = cookies.get(cookie_owner, { doNotParse: false }) || {};
@@ -348,11 +363,12 @@ export {
     MAX_SPEED,
     LEVEL_RATIO,
     SPEED_RATIO,
+    SOUND_TYPE,
     COOKIES_KEYS,
     FIELD_PORTION,
     PAD_PORTION,
     KEYBOARD_KEYS,
-    screenMode,
+    SCREEN_MODE,
     time,
     gameSounds,
     isMobile,

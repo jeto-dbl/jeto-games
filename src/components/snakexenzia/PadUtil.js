@@ -1,7 +1,8 @@
-import React from 'react'
-import { DIMENS_INT } from '../VALUES/dimens';
+import React from 'react';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import './SnakeXenzia.style.scss'
+import './SnakeXenzia.style.scss';
+import { DIMENS_INT } from '../VALUES/dimens';
 import { KEYBOARD_KEYS } from "./Util";
 
 
@@ -16,20 +17,20 @@ const ChangePadColor = (props) => {
             <div
                 className="pad-up"
                 onClick={() => changePadColor(next)}
-                style={{ cursor: "pointer" }}
-                >
-                <i
-                    className="fa fa-caret-up"
-                    style={{ color: `${nextPadColor}` }}></i>
+                style={{ cursor: "pointer" }}>
+                    <FontAwesomeIcon 
+                        icon="caret-up"
+                        color={`${nextPadColor}`}
+                    />
             </div>
             <div
                 className="pad-down"
                 onClick={() => changePadColor(current)}
-                style={{ cursor: "pointer" }}
-                >
-                <i
-                    className="fa fa-caret-down"
-                    style={{ color: `${padColor}` }}></i>
+                style={{ cursor: "pointer" }}>
+                    <FontAwesomeIcon 
+                        icon="caret-down" 
+                        color={`${padColor}`}
+                    />
             </div>
         </div>
     )

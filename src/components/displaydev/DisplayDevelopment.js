@@ -1,15 +1,20 @@
 import React from 'react'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import './DisplayDevelopment.style.scss';
 
 
 export function DisplayDevelopment({ isLogo }) {
     // eslint-disable-next-line
-    const [pageName, setPageName] = React.useState("Current");
+    const [pageName, _ ] = React.useState("Current");
 
     if (isLogo){
         return (
             <div className="loader-container">
-                <i className="fa fa-spinner fa-spin spinner"></i>
+                <FontAwesomeIcon 
+                    icon="spinner"
+                    className="faSpinner"
+                    spin
+                />
             </div>
         )
     } 

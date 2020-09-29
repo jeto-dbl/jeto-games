@@ -7,7 +7,7 @@ import { BOX_TYPE, BOX_SIZE_INC } from './Util';
 const DisplaySnake = (props) => {
     // if vibrate is true then the snake meets the field boundary
     // or it collides with itself, hence add the vibrate class.
-    const vibrate = props.vibrate ? "vibrate" : "";
+    const simulateFieldVibrate = props.simulateFieldVibrate ? "vibrate" : "";
     let eatClass = props.eat ? "eat-animate" : "";
     return props.snake.map((box, idx, array) => {
         const x = box[0];
@@ -33,7 +33,7 @@ const DisplaySnake = (props) => {
         <div 
             key={idx} 
             style={style} 
-            className={`snake-box ${vibrate} ${eat}`}>
+            className={`snake-box ${simulateFieldVibrate} ${eat}`}>
             {/* if this box represent head, attach a dot at its center */}
             {
                 idx === array.length - 1 ? 
@@ -58,7 +58,7 @@ export default function Snake(props) {
         <div className="snake">
             <DisplaySnake 
                 snake={props.snake} 
-                vibrate={props.vibrate}
+                simulateFieldVibrate={props.simulateFieldVibrate}
                 snakeColor={props.snakeColor}
                 eat={props.eat}
                 />

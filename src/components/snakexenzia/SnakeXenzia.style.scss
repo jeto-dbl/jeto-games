@@ -383,31 +383,53 @@ $foodDim: 15px;
 // END => Snake Food Style
 
 // Pad Style (for mobile)
-// .score-board--pad-color-change {
-//     @include flex-row-center-center;
-//     position: absolute;
-//     bottom: $fieldMargin;
-//     right: $fieldMargin;
-//     // border: 1px solid red;
-// }
-
-button.pass-through-wall {
-    // background-color: transparent;
-    padding: 0px 10px;
-    font-size: 20px;
+.multi-icons__pad-color-change {
+    @include flex-row-center-center;
     position: absolute;
     bottom: $fieldMargin;
-    right: calc(#{$fieldMargin} + 50px + 10px);
+    right: $fieldMargin;
+    z-index: $zIndexMax;
+    // border: 1px solid red;
+}
+
+button.notification {
+    // background-color: transparent;
+    // position: absolute;
+    // bottom: $fieldMargin;
+    // right: calc(#{$fieldMargin} + 50px + 10px);
+    align-self: flex-end;
+    @include flex-col-center-center;
+    // padding: 5px 8px;
+    margin: 0 2px;
+    font-size: 24px;
+    // @include transition(all, 3s, 0s);
+    
+    // svg, i {
+    //     @include transition(all, 3s, 0s);
+    // }
+    &:hover {
+        opacity: 0.9;
+    }
+}
+
+.toggle-notifications {
+    background-color: transparent;
+    color: #f1f1f17a;
+    color: $whiteDim;
+
+    &:hover {
+        color: $white;
+    }
 }
 
 .pad-color-change {
     @include flex-col-between-center;
-    position: absolute;
-    bottom: $fieldMargin;
-    right: $fieldMargin;
+    // position: absolute;
+    // bottom: $fieldMargin;
+    // right: $fieldMargin;
     width: 50px;
     height: 72px;
-    margin-left: 10px;
+    margin-left: 8px;
     border-radius: 5px;
     background-color: rgba(8, 107, 107, .3);
     @include box-shadow(0px, 0px, 4px, 2px, #000, 0.19, 0, 0, 0, 0, #000, 0.0);
@@ -418,6 +440,7 @@ button.pass-through-wall {
 }
 
 .pad-up, .pad-down {
+    @include flex-col-center-center;
     cursor: pointer;
     width: 100%;
     min-height: 35px;
@@ -456,8 +479,7 @@ button:active {
 
 .pad-boundary {
     @include flex-row-center-center;
-    margin: 0px auto;
-
+    margin: 5px auto;
     // border: 1px solid white;
 }
 
@@ -676,10 +698,10 @@ $arrowIndicatorColor: #f1f1f11f;
     border-radius: 50%;
     outline: none;
     border: none;
-    margin: 0px 4px 0px 16px;
+    margin: 0px 0px 0px 16px;
 }
 
-.fa-expand, .fa-compress {
+.screen-mode {
     color: #f1f1f17a;
     font-size: 20px;
     
@@ -885,8 +907,8 @@ $arrowIndicatorColor: #f1f1f11f;
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    color: rgb(163, 10, 10);
-    border: 6px solid rgb(163, 10, 10);
+    color: $bloodColor;
+    border: 6px solid $bloodColor;
     box-shadow: inset 0px 0px 4px 2px rgba(0, 0, 0, .2);
     -webkit-box-shadow: inset 0px 0px 4px 2px rgba(0, 0, 0, .2);
     @include animation(pulse, 2s, linear, 0.5s, infinite, none);

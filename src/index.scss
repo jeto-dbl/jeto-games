@@ -12,10 +12,19 @@
 * {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
-  color: #444444;
+  // Leaving this to cater generally for all tags,
+  // would affect React FontAwesomeIcon icon color display
+  // (it would use this color instead of their color
+  // color: #444444; // Type 1
+  // color: #525c65; // Type 2
   line-height: 1.6;
   margin: 0;
   padding: 0;
+}
+
+p {
+   // color: #444444; // Type 1
+  color: #525c65; // Type 2
 }
 
 a, a:link, a:visited {

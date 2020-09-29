@@ -4,13 +4,15 @@ import {
   Route,
   Switch,
 } from "react-router-dom";
-import './App.scss';
 
+import './fontawesome';
+import './App.scss';
 import DisplayDevelopment from "./components/displaydev";
 import Home from './components/home';
 import SnakeXenzia from './components/snakexenzia';
 import PageNotFound from "./components/pagenotfound";
 import ScrollButton from "./components/scrollbutton";
+
 
 
 function App() {
@@ -20,10 +22,11 @@ function App() {
   // 1. Display loading page till the App component is mounted
   // 2. if isLogo is true then it would use brand designed logo
   //    as the loading icon else would use general icon
-  if (isLoading) return (<DisplayDevelopment isLogo={true} />)
-  else
+  if (isLoading) {
+    return (<DisplayDevelopment isLogo={true} />);
+  }
+  else {
     return (
-      
         <HashRouter basename="/">
             <div className="app">
               <Switch>
@@ -48,6 +51,7 @@ function App() {
             </div>
         </HashRouter>
     );
+  }
 }
 
 export default App;

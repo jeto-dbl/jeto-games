@@ -135,9 +135,9 @@ const FieldBoundary = (props) => {
     const bonusLife = props.bonusLife;
     const gameOver = props.gameOver;
     const paused = props.paused;
-    const vibrate = props.vibrate;
+    const simulateFieldVibrate = props.simulateFieldVibrate;
     const score = props.score;
-    const vibrateClass = vibrate ? "vibrate" : "";
+    const vibrateClass = simulateFieldVibrate ? "vibrate" : "";
     const rotateX = isMobile() ? 0 : props.rotateX; // Only apply for Desktops
     const resumeGame = props.resumeGame;
     const togglePlayPause = props.togglePlayPause;
@@ -200,7 +200,7 @@ const FieldBoundary = (props) => {
 
                                 <Snake
                                     snake={snake}
-                                    vibrate={vibrate}
+                                    simulateFieldVibrate={simulateFieldVibrate}
                                     snakeColor={snakeColor}
                                     eat={eat}
                                 />

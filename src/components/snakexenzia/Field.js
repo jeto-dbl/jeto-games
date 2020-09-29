@@ -1,4 +1,5 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { instanceOf } from "prop-types";
 import { withCookies, Cookies } from "react-cookie";
 
@@ -9,13 +10,13 @@ import FieldBoundary from './FieldBoundary';
 import { NAME } from '../VALUES/strings';
 import { Sound } from './Sound';
 import { Pad, ChangePadColor } from './PadUtil';
+import { COLORS } from '../VALUES/colors';
 import { 
     DEFAULTS,
     BOX_SIZE, 
     KEYBOARD_KEYS, 
     SNAKE_COLORS,
     PAD_COLORS,
-    VIBRATE_MILLISECONDS,
     FIELD_IMAGES,
     NORMAL_FOOD_POINT,
     BONUS_FOOD_POINT,
@@ -34,17 +35,14 @@ import {
     browserLength,
     browserBreadth,
     isMobile,
-    screenMode,
+    SCREEN_MODE,
     time,
-    Queue,
+    SOUND_TYPE,
 } from './Util';
-import { COLORS } from '../VALUES/colors';
 
 
-let START_DIRECTION = KEYBOARD_KEYS.RIGHT;
 const SOUND = new Sound();
-// eslint-disable-next-line
-const DIRECTIONS_QUEUE = new Queue();
+let START_DIRECTION = DEFAULTS.startDirection;
 
 
 const generateRandomCoord = () => {
@@ -73,9 +71,9 @@ const generateRandomCoord = () => {
 
 }
 
-const isPartOfSnake = (food, snake) => {
+const isPartOfSnake = (foodOrHead, snake) => {
     for (let body of snake) {
-        if (food[0] === body[0] && food[1] === body[1]) {
+        if (foodOrHead[0] === body[0] && foodOrHead[1] === body[1]) {
             return true;
         }
     }
@@ -83,10 +81,9 @@ const isPartOfSnake = (food, snake) => {
 }
 
 const isSnakeOutOfField = (snakeHead) => {
-    const X = snakeHead[0];
-    const Y = snakeHead[1];
+    const [X, Y] = snakeHead;
     if (X < 0 || X >= 100 || Y < 0 || Y >= 100) {
-        return true
+        return true;
     };
     return false;
 }
@@ -94,14 +91,14 @@ const isSnakeOutOfField = (snakeHead) => {
 const isSnakeDead = (snakeHead, snake) => {
     if (isSnakeOutOfField(snakeHead) ||
         isPartOfSnake(snakeHead, snake)) {
-        return true
+        return true;
     };
     return false;
 }
 
 const getNewSnakeHead = (direction, snakeHead, allowSnakeThroughWalls) => {
-
     let [newX, newY] = snakeHead;
+
     switch (direction) {
         case KEYBOARD_KEYS.RIGHT:
             // Increase X; Y remains constant.
@@ -123,14 +120,14 @@ const getNewSnakeHead = (direction, snakeHead, allowSnakeThroughWalls) => {
             break;
     }
 
+    // Allows snake to pass through walls.
+    // You can comment this conditions if you don't want the effect
     if(allowSnakeThroughWalls) {
-        // Allows snake to pass through walls.
-        // You can comment this conditions if you don't want the effect
         if(newX < 0 || newX >= 100) { // if newX is not within boundary
-            newX = newX < 0 ? 100 + newX : newX - 100
+            newX = newX < 0 ? 100 + newX : newX - 100;
         }
         if(newY < 0 || newY >= 100) { // if newY is not within boundary
-            newY = newY < 0 ? 100 + newY : newY - 100
+            newY = newY < 0 ? 100 + newY : newY - 100;
         }
     }
 
@@ -150,7 +147,7 @@ const generateRandomSnakePos = (allowSnakeThroughWalls) => {
     const possibleDir = [
         KEYBOARD_KEYS.UP, KEYBOARD_KEYS.RIGHT, 
         KEYBOARD_KEYS.DOWN, KEYBOARD_KEYS.LEFT,
-    ]
+    ];
 
     // Now I have to add one more box to modify the direction in which the 
     // other boxes would move towards to. 
@@ -185,22 +182,18 @@ const generateFoodCoordinate = (snake) => {
 }
 
 const getSnakeColor = () => {
-    return SNAKE_COLORS[Math.floor(Math.random() * SNAKE_COLORS.length)]
+    return SNAKE_COLORS[Math.floor(Math.random() * SNAKE_COLORS.length)];
 }
 
 
 export class Field extends React.Component {
     static propTypes = {
-        cookies: instanceOf(Cookies).isRequired
+        cookies: instanceOf(Cookies).isRequired,
     };
+
     constructor(props){
         super(props);
 
-    // if(newY < 0) {
-    //     newY = 100 + newY;
-    // } else if (newY >= 100) {
-    //     newY = newY - 100;
-    // }
         this.startingState = {
             level: 1,
             countdown: DEFAULTS.countdown,
@@ -213,9 +206,9 @@ export class Field extends React.Component {
             numOfFoodEaten: 0,
             gameOver: false,
             paused: false,
-            vibrate: false,
+            simulateFieldVibrate: false,
             padColorPos: 0,
-            fullscreenMode: screenMode.EXPAND,
+            fullscreenMode: SCREEN_MODE.expand,
             draggable: false,
             turnedThisFrame: false,
             padDimen: this.getPadDim(),
@@ -226,6 +219,20 @@ export class Field extends React.Component {
                 gameKey: COOKIES_KEYS.allowSnakeThroughWalls,
                 doNotParse: false
             }) || DEFAULTS.allowSnakeThroughWalls,
+            // Default for muting all sounds is false
+            muteSounds: getCookie({
+                cookies: this.props.cookies, 
+                gameType: NAME.snakeXenzia, 
+                gameKey: COOKIES_KEYS.muteSounds,
+                doNotParse: false
+            }) || DEFAULTS.muteSounds,
+            // Default for muting all vibration is false
+            muteVibrations: getCookie({
+                cookies: this.props.cookies, 
+                gameType: NAME.snakeXenzia, 
+                gameKey: COOKIES_KEYS.muteVibrations,
+                doNotParse: false
+            }) || DEFAULTS.muteVibrations,
             // Default Highscore is 0
             highscore: getCookie({
                 cookies: this.props.cookies, 
@@ -233,6 +240,8 @@ export class Field extends React.Component {
                 gameKey: COOKIES_KEYS.highscore,
                 doNotParse: false
             }) || DEFAULTS.highscore,
+            // displayAllNotifications: false,
+            displayAllNotifications: !isMobile(),
             // Rotate screen by a default of 25 degrees when you have included the PlayerGuide 
             // For now, use a default rotation of 0deg
             rotateX: getCookie({
@@ -241,29 +250,17 @@ export class Field extends React.Component {
                 gameKey: COOKIES_KEYS.rotateX,
                 doNotParse: false
             }) || DEFAULTS.rotateX,
-            isGuideCancelled: DEFAULTS.cancelGuide,
+            isGuideCancelled: DEFAULTS.isGuideCancelled,
             isGuideDeleted: getCookie({
                 cookies: this.props.cookies, 
                 gameType: NAME.snakeXenzia, 
                 gameKey: COOKIES_KEYS.isGuideDeleted,
                 doNotParse: false
             }) || DEFAULTS.isGuideDeleted,
-        }
-
-        // console.log({
-        //     allowSnakeThroughWalls: getCookie({
-        //         cookies: this.props.cookies, 
-        //         gameType: NAME.snakeXenzia, 
-        //         gameKey: COOKIES_KEYS.allowSnakeThroughWalls,
-        //         doNotParse: false
-        //     })
-        // })
-
-        // Suggested icons to pass through walls
-        // fas fa-recycle
+        };
 
         // generate a random starting snake position
-        this.startingState.snake = generateRandomSnakePos(false)
+        this.startingState.snake = generateRandomSnakePos(false);
         // this.startingState.snake = [[4, 0], [8, 0], [12, 0]]
         
         // Add food to state
@@ -330,75 +327,92 @@ export class Field extends React.Component {
         this.setDraggableTrue = this.setDraggableTrue.bind(this);
         this.dragField = this.dragField.bind(this);
         this.updatePadDimension = this.updatePadDimension.bind(this);
+        this.toggleMuteSounds = this.toggleMuteSounds.bind(this);
+        this.toggleMuteVibrations = this.toggleMuteVibrations.bind(this);
         this.togglePassThroughWall = this.togglePassThroughWall.bind(this);
+        this.updateHigherOrderCookie = this.updateHigherOrderCookie.bind(this);
+        this.toggleDisplayAllNotifications = this.toggleDisplayAllNotifications.bind(this);
         this.cancelPlayerGuide = this.cancelPlayerGuide.bind(this);
         this.deletePlayerGuide = this.deletePlayerGuide.bind(this);
     }
 
-    togglePassThroughWall() {
+    toggleDisplayAllNotifications() {
+        if(isMobile()) {
+            this.setState({ displayAllNotifications: !this.state.displayAllNotifications });
+        } else {
+            this.setState({ displayAllNotifications: true });
+        }
+    }
+
+    updateHigherOrderCookie({ gameKey, gameValue }) {
         setCookie({
             cookies: this.props.cookies,
             gameType: NAME.snakeXenzia,
-            gameKey: COOKIES_KEYS.allowSnakeThroughWalls,
-            gameValue: !this.state.allowSnakeThroughWalls,
+            gameKey: gameKey,
+            gameValue: gameValue,
         });
 
-        this.setState({ allowSnakeThroughWalls: !this.state.allowSnakeThroughWalls });
+        this.setState({ [gameKey]: gameValue });
+
         setCookie({
             cookies: this.props.cookies,
             gameType: NAME.snakeXenzia,
             gameKey: COOKIES_KEYS.state,
             gameValue: this.state,
+        });
+    }
+
+    toggleMuteSounds() {
+        this.updateHigherOrderCookie({
+            gameKey: COOKIES_KEYS.muteSounds,
+            gameValue: !this.state.muteSounds,
+        });
+        
+    }
+
+    toggleMuteVibrations() {
+        this.updateHigherOrderCookie({
+            gameKey: COOKIES_KEYS.muteVibrations,
+            gameValue: !this.state.muteVibrations,
+        });
+    }
+
+    togglePassThroughWall() {
+        this.updateHigherOrderCookie({
+            gameKey: COOKIES_KEYS.allowSnakeThroughWalls,
+            gameValue: !this.state.allowSnakeThroughWalls,
         });
     }
 
     cancelPlayerGuide(cancel) {
-        // console.log(`Cancel Player Guide... Cancel:${cancel}`)
-        this.setState({ isGuideCancelled: cancel });
-        setCookie({
-            cookies: this.props.cookies,
-            gameType: NAME.snakeXenzia,
-            gameKey: COOKIES_KEYS.state,
-            gameValue: this.state,
-        });
-        // console.log(`from cancelPlayerGuide: isGuideCancelled(${this.state.isGuideCancelled})`)
-        this.beginGame();
+        // this.updateHigherOrderCookie({
+        //     gameKey: COOKIES_KEYS.isGuideCancelled,
+        //     gameValue: cancel,
+        // });
+        // this.beginGame();
     }
 
     deletePlayerGuide(del) {
-        // console.log("Delete Player Guide...")
-        this.setState({ isGuideDeleted: del });
-
-        setCookie({
-            cookies: this.props.cookies,
-            gameType: NAME.snakeXenzia,
-            gameKey: COOKIES_KEYS.isGuideDeleted,
-            gameValue: del,
-        });
-        
-        setCookie({
-            cookies: this.props.cookies,
-            gameType: NAME.snakeXenzia,
-            gameKey: COOKIES_KEYS.state,
-            gameValue: this.state,
-        });
-
-        this.beginGame();
+        // this.updateHigherOrderCookie({
+        //     gameKey: COOKIES_KEYS.isGuideDeleted,
+        //     gameValue: del,
+        // });
+        // this.beginGame();
     }
 
     toogleFullScreen(fullScreenMode) {
-        if(fullScreenMode === screenMode.EXPAND) {
+        if(fullScreenMode === SCREEN_MODE.expand) {
             // 1. View in fullscreen
             openFullscreen();
             // 2. Change the fullscreenMode to compress
             // (this would in turn change the icon automatically)
-            this.setState({ fullscreenMode: screenMode.COMPRESS});
+            this.setState({ fullscreenMode: SCREEN_MODE.compress});
         } else { // Screen mode is compress
             // 1. Exit fullscreen
             closeFullscreen();
             // 2. Change the fullscreenMode to expand
             // (this would in turn change the icon automatically)
-            this.setState({ fullscreenMode: screenMode.EXPAND });
+            this.setState({ fullscreenMode: SCREEN_MODE.expand });
         }
     }
 
@@ -407,14 +421,17 @@ export class Field extends React.Component {
         // the modulo arithmetic make sure the color position (index) 
         // is valid (i.e. 0 <= position < PAD_COLORS.length).
         let newColorPos = (this.state.padColorPos + dir) % PAD_COLORS.length;
+        
         if(newColorPos < 0){
             newColorPos = PAD_COLORS.length - 1;
         }
-        this.setState({ padColorPos: newColorPos });
-        this.setState({ padColor: PAD_COLORS[this.state.padColorPos]});
 
-        let nextColorPos = (this.state.padColorPos + 1) % PAD_COLORS.length;
+        this.setState({ padColorPos: newColorPos });
+        this.setState({ padColor: PAD_COLORS[newColorPos]});
+
+        let nextColorPos = (newColorPos + 1) % PAD_COLORS.length;
         this.setState({ nextPadColor: PAD_COLORS[nextColorPos] });
+
     }
 
     getComputerLevel() {
@@ -427,9 +444,9 @@ export class Field extends React.Component {
 
     resetState() {
         this.setState(this.defaultState);
-        this.setState({ snake: generateRandomSnakePos(false) })
+        this.setState({ snake: generateRandomSnakePos(false) });
         // generateRandomSnakePos() would have updated the START_DIRECTION hence update the direction
-        this.setState({ direction: START_DIRECTION }) 
+        this.setState({ direction: START_DIRECTION });
         this.setState({ speed: GAME_START_SPEED });
         this.setState({ food: generateFoodCoordinate(this.state.snake) });
         this.setState({ snakeColor: getSnakeColor() });
@@ -454,6 +471,20 @@ export class Field extends React.Component {
             gameKey: COOKIES_KEYS.allowSnakeThroughWalls,
             doNotParse: false
         }) || DEFAULTS.allowSnakeThroughWalls });
+
+        this.setState({ muteSounds: getCookie({
+            cookies: this.props.cookies, 
+            gameType: NAME.snakeXenzia, 
+            gameKey: COOKIES_KEYS.muteSounds,
+            doNotParse: false
+        }) || DEFAULTS.muteSounds });
+
+        this.setState({ muteVibrations: getCookie({
+            cookies: this.props.cookies, 
+            gameType: NAME.snakeXenzia, 
+            gameKey: COOKIES_KEYS.muteVibrations,
+            doNotParse: false
+        }) || DEFAULTS.muteVibrations });
 
         setCookie({
             cookies: this.props.cookies,
@@ -490,9 +521,9 @@ export class Field extends React.Component {
     }
 
     vibratePad() {
-        // Only vibrate pad if the game is on
+        // Only vibrate pad only if the game is on
         if(!this.state.paused && !this.state.gameOver && this.state.countdown <= 0){
-            window.navigator.vibrate(100);
+            this.vibrate(100);
         }
     }
 
@@ -550,6 +581,7 @@ export class Field extends React.Component {
     }
 
     onPadDirChange(direction) {
+        // this direction also has a keyCode value
         this.updateDirection(direction);
         this.vibratePad();
     }
@@ -562,7 +594,7 @@ export class Field extends React.Component {
 
     moveToNewLevel() {
         this.setState({ snakeColor: getSnakeColor() });
-        SOUND.pauseSnakeHiss();
+        this.playSound(SOUND_TYPE.pauseSnakeHiss);
         // this has to be BEFORE you assign the new level
         this.increaseScoreBy(NEW_LEVEL_FOOD_POINT);
 
@@ -587,8 +619,33 @@ export class Field extends React.Component {
         this.setState({ eat: shouldEat });
     }
 
+    playSound(soundType) {
+        if(this.state.muteSounds) return false;
+        // SOUND
+        if(soundType === SOUND_TYPE.playSnakeHiss) {
+            SOUND.playSnakeHiss();
+        } 
+        else if(soundType === SOUND_TYPE.playEatFood) {
+            SOUND.playEatFood();
+        } 
+        else if(soundType === SOUND_TYPE.pauseSnakeHiss) {
+            SOUND.pauseSnakeHiss();
+        } 
+        else if(soundType === SOUND_TYPE.playEatFoodBonus) {
+            SOUND.playEatFoodBonus();
+        } 
+        else if(soundType === SOUND_TYPE.playGameOver) {
+            SOUND.playGameOver();
+        }
+        else if(soundType === SOUND_TYPE.playAdvanceToLevel) {
+            SOUND.playAdvanceToLevel();
+        } 
+
+        return true;
+    }
+
     moveSnake() {
-        SOUND.playSnakeHiss();
+        this.playSound(SOUND_TYPE.playSnakeHiss);
         this.setEat(false);
 
         let newSnake = [...this.state.snake];
@@ -611,15 +668,6 @@ export class Field extends React.Component {
         // Before you move the snake, also check if the head is within coordinate
         // and snake has not eaten itself
         const isDead = isSnakeDead(snakeHead, this.state.snake);
-
-        // console.log({
-        //     MOVESNAKE: "From MOVE SNAKE!",
-        //     snakeHead: snakeHead,
-        //     isDead: isDead,
-        //     snake: this.state.snake,
-        //     direction: this.state.direction,
-        // })
-
         if (!isDead){
             // Add the new head
             newSnake.push(snakeHead);
@@ -687,7 +735,6 @@ export class Field extends React.Component {
         this.startGame();
     }
 
-
     resetFoodForSpeed() {
         const assignedLevelFoods = this.getRealLevel() * LEVEL_RATIO;
         const assignedLevelSpeed = this.getRealLevel() * SPEED_RATIO;
@@ -751,7 +798,7 @@ export class Field extends React.Component {
             const bonus = setInterval(() => {
                 const snakeHasEatenBonusFood = prevFoodLevel - this.foodLevelToEat() > 1;
                 if (snakeHasEatenBonusFood) {
-                    SOUND.playEatFoodBonus();
+                    this.playSound(SOUND_TYPE.playEatFoodBonus);
                     // increase score by the ratio of the bonus food point remaining
                     const remainingBonusFoodPoint = (currBonusLife / totalBonusLife) * BONUS_FOOD_POINT;
                     this.increaseScoreBy(remainingBonusFoodPoint);
@@ -772,19 +819,19 @@ export class Field extends React.Component {
                 return;
             }
         } else {
-            SOUND.playEatFood();
+            this.playSound(SOUND_TYPE.playEatFood);
         }
     }
 
     setDraggableFalse(event) {
-        this.setState({draggable: false});
+        this.setState({ draggable: false });
     }
 
     setDraggableTrue(event) {
         // startY was defined here so as to be used immediately in 
         // dragField()
         this.startY = event.clientY;
-        this.setState({draggable: true});
+        this.setState({ draggable: true });
     }
 
     dragField(event) {
@@ -832,13 +879,19 @@ export class Field extends React.Component {
         }
     }
 
+    vibrate(vibrateMilliseconds) {
+        if(this.state.muteVibrations) return false;
+        window.navigator.vibrate(vibrateMilliseconds)
+        return true;
+    }
+
     stopGame() {
-        SOUND.pauseSnakeHiss();
+        this.playSound(SOUND_TYPE.pauseSnakeHiss);
         this.setState({ gameOver: true });
-        this.setState({ vibrate: true });
-        SOUND.playGameOver();
-        // The VIBRATE_MILLISECONDS is the same as the vibrate class in the dimens.scss file
-        window.navigator.vibrate(VIBRATE_MILLISECONDS);
+        this.setState({ simulateFieldVibrate: true });
+        this.playSound(SOUND_TYPE.playGameOver);
+        // The DEFAULTS.vibrateMilliseconds is the same as the vibrate class in the dimens.scss file
+        this.vibrate(DEFAULTS.vibrateMilliseconds);
     }
 
     startGame() {
@@ -874,7 +927,7 @@ export class Field extends React.Component {
                 // console.log(`${this.state.currLevelFoods} foods remaining`);
                 if(this.speedMustIncrease()) {
                     clearInterval(currInterval);
-                    this.increaseSpeed();
+                    this.increaseSpeed(); // this method has the startGame()
                 }
             }
         }, this.state.speed);
@@ -884,7 +937,7 @@ export class Field extends React.Component {
     preparePlayer() {
         // console.log("Player preparing...")
         
-        SOUND.playAdvanceToLevel();
+        this.playSound(SOUND_TYPE.playAdvanceToLevel);
 
         // Only change snake color if user don't have a previous game
         if(!getCookie({
@@ -919,7 +972,7 @@ export class Field extends React.Component {
     pauseGame() {
         // Only pause the game if game is not over and it's not paused
         if(!this.state.gameOver && !this.state.paused) {
-            SOUND.pauseSnakeHiss();
+            this.playSound(SOUND_TYPE.pauseSnakeHiss);
             this.setState({ paused: true });
             setCookie({
                 cookies: this.props.cookies,
@@ -1014,25 +1067,86 @@ export class Field extends React.Component {
         )
     }
 
+    getNotificationObject (
+        {state, colorTrue, colorFalse, faIconV5True, faIconV5False, titleTrue, titleFalse}
+        ) {
+            const display = this.state.displayAllNotifications ? "flex" : "none";
+            return {
+                title: state ? titleTrue : titleFalse,
+                faIconv5: state ? faIconV5True : faIconV5False,
+                style: {
+                    color: state ? colorTrue : colorFalse,
+                    display: display,
+                    margin: "5px 8px",
+                },
+            }
+    }
+
 
     render() {
         // Remove the default image.
         document.body.style.backgroundImage = "url('')";
 
-        const passThroughWallStyle = {
-            color: this.state.allowSnakeThroughWalls ? COLORS.peaceColor : COLORS.bloodColor,
+        const display = this.state.displayAllNotifications ? "flex" : "none";
+
+        const displayAllNotifications = {
+            title: this.state.displayAllNotifications ? "Hide notifications" : "Show notifications",
+            style: { margin: "5px 8px" }
         }
+
+        const passThroughWall = {
+            title: this.state.allowSnakeThroughWalls ? "Block boundaries" : "Unblock boudaries",
+            faIconv5: "recycle",
+            style: {
+                color: this.state.allowSnakeThroughWalls ? COLORS.peaceColor : COLORS.bloodColor,
+                display: display,
+                margin: "5px 8px",
+            },
+        }
+
+        const muteVibrations = {
+            title: this.state.muteVibrations ? "Unmute all vibrations" : "Mute all vibrations",
+            faIconV5: this.state.muteVibrations ? "bell-slash": "bell",
+            style: { 
+                color: this.state.muteVibrations ? "" : COLORS.peaceColor,
+                display: display,
+                margin: "5px 8px",
+            },
+        }
+
+        const muteSounds = {
+            title: this.state.muteSounds ? "Unmute all sounds" : "Mute all sounds",
+            faIconV5: this.state.muteSounds ? "volume-mute": "volume-up",
+            style: { 
+                color: this.state.muteSounds ? "" : COLORS.peaceColor,
+                display: display,
+                margin: "5px 8px",
+            },
+        }
+
+        const fullscreenMode = {
+            title: this.state.fullscreenMode === SCREEN_MODE.expand ? "Expand Screen" : "Compress Screen",
+            faIconv5: this.state.fullscreenMode,
+            faIcon4: `fa fa-${this.state.fullscreenMode}`,
+        }
+
 
         return(
             <div id="game-boundary">
                 <div className="fullscreen-highscore">
                     {this.highscoreBoard()}
-                    <button className="fullscreen-toggle">
-                        <i
-                            className={"fa fa-" + this.state.fullscreenMode}
-                            onClick={() => this.toogleFullScreen(this.state.fullscreenMode)}
+                    <button 
+                        title={fullscreenMode.title}
+                        onClick={() => this.toogleFullScreen(this.state.fullscreenMode)}
+                        className="fullscreen-toggle">
+                        <FontAwesomeIcon 
+                            icon={fullscreenMode.faIconv5}
+                            className="screen-mode"
+                        />
+                        {/* <i
+                            className={`${fullscreenMode.faIcon4} screen-mode`}
                             >
-                        </i>
+                        </i> */}
                     </button>
                 </div>
 
@@ -1048,12 +1162,12 @@ export class Field extends React.Component {
                     bonusLife={this.state.bonusLife}
                     gameOver={this.state.gameOver}
                     paused={this.state.paused}
-                    resumeGame={this.resumeGame}
-                    togglePlayPause={this.togglePlayPause}
-                    vibrate={this.state.vibrate}
-                    resetGame={this.resetGame}
                     score={this.state.score}
                     rotateX={this.state.rotateX}
+                    simulateFieldVibrate={this.state.simulateFieldVibrate}
+                    resumeGame={this.resumeGame}
+                    togglePlayPause={this.togglePlayPause}
+                    resetGame={this.resetGame}
                 />
                 
                 {/* 
@@ -1069,24 +1183,62 @@ export class Field extends React.Component {
                                 color={this.state.padColor}
                                 padDimen={this.state.padDimen}
                             />
-                            <ChangePadColor
-                                padColor={this.state.padColor}
-                                nextPadColor={this.state.nextPadColor}
-                                changePadColor={this.changePadColor}
-                            />
                         </>
                     )
                 }
 
-                <button 
-                    onClick={this.togglePassThroughWall}
-                    className="pass-through-wall">
-                    <i 
-                        style={passThroughWallStyle}
-                        className="fas fa-recycle"
-                        ></i>
-                </button>
+                <div className="multi-icons__pad-color-change">
+                    <button 
+                        onClick={this.togglePassThroughWall}
+                        title={passThroughWall.title}
+                        className="notification">
+                            <FontAwesomeIcon
+                                icon={passThroughWall.faIconv5}
+                                style={passThroughWall.style}
+                            />
+                    </button>
+                    <button 
+                        onClick={this.toggleMuteSounds}
+                        title={muteSounds.title}
+                        className="notification">
+                            <FontAwesomeIcon
+                                icon={muteSounds.faIconV5}
+                                style={muteSounds.style}
+                            />
+                    </button>
+                    
+                    {
+                        isMobile() && (
+                            <>
+                                <button 
+                                    onClick={this.toggleMuteVibrations}
+                                    title={muteVibrations.title}
+                                    className="notification">
+                                        <FontAwesomeIcon
+                                            icon={muteVibrations.faIconV5}
+                                            style={muteVibrations.style}
+                                        />
+                                </button>
+                                 <button 
+                                    onClick={this.toggleDisplayAllNotifications}
+                                    title={displayAllNotifications.title}
+                                    className="notification toggle-notifications">
+                                        <FontAwesomeIcon 
+                                            icon="ellipsis-v"
+                                            style={displayAllNotifications.style}
+                                        />        
+                                </button>
 
+                                <ChangePadColor
+                                    padColor={this.state.padColor}
+                                    nextPadColor={this.state.nextPadColor}
+                                    changePadColor={this.changePadColor}
+                                />
+                            </>
+                        )
+                    }
+                </div>
+        
                 {/* <PlayerGuide
                     isGuideCancelled={this.state.isGuideCancelled}
                     cancelPlayerGuide={this.cancelPlayerGuide}

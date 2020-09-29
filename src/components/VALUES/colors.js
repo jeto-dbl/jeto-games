@@ -27,10 +27,14 @@ const BRAND_COLORS = {
     youtube: "#FF0000",
     instagram: "#E1306C",
     linkedIn: "#0e76a8",
-    email: "#293345",
     whatsapp: "#25d366",
     mobile: "#444",
-    github: "",
+    // email: "#293345", // Type 1
+    // email: "#B23121", // Type 2
+    email: "#D44638", // Type 3
+    // github: "#333", // Type 1
+    github: "#4078c0", // Type 2
+    // github: "#bd2c00", // Type 3
 
     autoCad: "#A61A1A",
     protaStructure: "#9b2743",
